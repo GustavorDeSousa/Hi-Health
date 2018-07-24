@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".login" />
         <activity android:name=".dado1" />
-        <activity android:name=".dado2"></activity>
+        <activity android:name=".dado2" />
+        <activity android:name=".ConfigAlertActivity"></activity>
     </application>
 
 </manifest>
