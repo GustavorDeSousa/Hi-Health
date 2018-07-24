@@ -12,15 +12,19 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:textColor="#000"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvMensagemAlert"
-        android:text="Edite a mensagem do alerta"
+        android:text="@string/edite_a_mensagem_do_alerta"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:textColor="#000"
         />
     <TextView
         android:layout_width="match_parent"
@@ -30,6 +34,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:textColor="#000"
         />
     <TextView
         android:layout_width="match_parent"
@@ -39,5 +45,17 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:textColor="#000"
         />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btEnviarSms"
+        android:text="@string/enviar"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:onClick="enviarSms"/>
 </LinearLayout>

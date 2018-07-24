@@ -3,6 +3,8 @@
     <string name="escolha_o_tempo_para_enviar_o_alerta"><u>Escolha o tempo para enviar o alerta</u></string>
     <string name="ajuda">Ajuda</string>
     <string name="notifica_es_chat_e_sms">Notificações Chat e SMS</string>
+    <string name="edite_a_mensagem_do_alerta">Edite a mensagem do alerta</string>
+    <string name="enviar">Enviar</string>
 
     <string-array name="tipo_sanguineo">
         <item>A+</item>
