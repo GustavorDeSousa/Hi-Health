@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "485115120846",
+    "firebase_url": "https://hihealth-11339.firebaseio.com",
+    "project_id": "hihealth-11339",
+    "storage_bucket": "hihealth-11339.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485115120846:android:7ecb436ffcdc0a95",
+        "android_client_info": {
+          "package_name": "br.com.thecharles.hihealth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485115120846-i663bnl61c17jrppciads3bu72rtfqea.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.thecharles.hihealth",
+            "certificate_hash": "e6e9209c5921ee3e2eef5b4353c021b0be02901a"
+          }
+        },
+        {
+          "client_id": "485115120846-bqhg4g2krfav9hjrqje8b8faldchsjcb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHBa5gRJDsCB34-RjjrMwjbJCniQCjBF8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485115120846-bqhg4g2krfav9hjrqje8b8faldchsjcb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
