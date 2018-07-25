@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Hi-Health</string>
 
+    <!-- ... -->
+    <string name="facebook_application_id" translatable="false">APP_ID</string>
+    <!-- Facebook Application ID, prefixed by 'fb'. Enables Chrome Custom tabs. -->
+    <string name="facebook_login_protocol_scheme" translatable="false">fbAPP_ID</string>
+
+
+    <string name="title_sign_out">Sair</string>
+
     <string-array name="tipo_sanguineo">
         <item>A+</item>
         <item>A-</item>
