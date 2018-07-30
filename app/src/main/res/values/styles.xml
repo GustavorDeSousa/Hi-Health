@@ -9,6 +9,8 @@
     </style>
 
 
+
+
     <style name="GreenTheme" parent="FirebaseUI">
         <!-- Required for sign-in flow styling -->
         <item name="colorPrimary">@color/colorPrimary</item>

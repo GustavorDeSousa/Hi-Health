@@ -5,8 +5,14 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/title_contacts"
-        android:gravity="center_vertical|center_horizontal"/>
+        android:gravity="center_horizontal"/>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:src="@drawable/ic_warning_black_24dp" />
 </LinearLayout>

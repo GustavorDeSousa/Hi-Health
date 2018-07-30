@@ -3,6 +3,7 @@ package br.com.thecharles.hihealth;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +12,10 @@ import android.widget.TextView;
 
 import br.com.thecharles.hihealth.fragments.ContactsFragment;
 import br.com.thecharles.hihealth.fragments.DataFragment;
+import br.com.thecharles.hihealth.fragments.ProfileFragment;
 
 // TODO Corrigir bug de ciclo de vida
 public class BottomNavigationActivity extends AppCompatActivity {
-
-    private TextView mTextMessage;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -24,21 +24,18 @@ public class BottomNavigationActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_data:
-                    mTextMessage.setText(R.string.title_data);
                     getSupportActionBar().setTitle(R.string.title_data);
                     Fragment dataFragment = DataFragment.newInstance();
                     openFragment(dataFragment);
                     return true;
                 case R.id.navigation_contacts:
-                    mTextMessage.setText(R.string.title_contacts);
                     getSupportActionBar().setTitle(R.string.title_contacts);
                     Fragment contactsFragment = ContactsFragment.newInstance();
                     openFragment(contactsFragment);
                     return true;
                 case R.id.navigation_profile:
-                    mTextMessage.setText(R.string.title_profile);
                     getSupportActionBar().setTitle(R.string.title_profile);
-                    Fragment profileFragment = DataFragment.newInstance();
+                    Fragment profileFragment = ProfileFragment.newInstance();
                     openFragment(profileFragment);
                     return true;
             }
@@ -51,7 +48,6 @@ public class BottomNavigationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation);
 
-        mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
