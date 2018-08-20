@@ -12,6 +12,8 @@ import br.com.thecharles.hihealth.R;
 
 public class DataFragment extends Fragment{
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

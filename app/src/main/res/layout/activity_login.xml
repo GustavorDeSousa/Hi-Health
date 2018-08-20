@@ -10,7 +10,7 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp">
 
-    <!-- Login progress -->
+    <!-- LoginActivity progress -->
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -26,16 +26,16 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/login"
+            android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Login"
+            android:hint="Email"
             android:inputType="text"
             android:maxLines="1"
             android:singleLine="true" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/edtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Senha"
@@ -43,7 +43,7 @@
             android:maxLines="1"
             android:singleLine="true" />
 
-        <Button
+        <Button android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

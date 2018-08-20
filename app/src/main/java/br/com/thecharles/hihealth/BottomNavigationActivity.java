@@ -7,8 +7,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import br.com.thecharles.hihealth.fragments.ContactsFragment;
 import br.com.thecharles.hihealth.fragments.DataFragment;
@@ -16,6 +20,9 @@ import br.com.thecharles.hihealth.fragments.ProfileFragment;
 
 // TODO Corrigir bug de ciclo de vida
 public class BottomNavigationActivity extends AppCompatActivity {
+
+
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -50,7 +57,12 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        Fragment dataFragment = DataFragment.newInstance();
+        getSupportActionBar().setTitle(R.string.title_data);
+        openFragment(dataFragment);
     }
+
 
     private void openFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -59,4 +71,21 @@ public class BottomNavigationActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.sign_out_menu) {
+            firebaseAuth.signOut();
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
