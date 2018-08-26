@@ -14,23 +14,35 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import br.com.thecharles.hihealth.model.User;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private static final String TAG = "User: ";
     private Button btnRegister;
-    private EditText edtName, edtEmail, edtPassword, edtPhone, edtDocument, edtAddress, edtHeight, edtWeight;
+    private EditText edtName, edtEmail, edtPassword, edtPhone, edtDocument,
+            edtAddress, edtHeight, edtWeight;
 
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+//    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+//        FirebaseUser user = firebaseAuth.getCurrentUser();
+//        userID = user.getUid();
+
 
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edtEmail);
@@ -57,46 +69,47 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveUserData() {
-        DatabaseReference users = databaseReference.child("users");
+//        DatabaseReference users = databaseReference.child("users");
 
-        String name = edtName.getText().toString();
         String email = edtEmail.getText().toString();
-        String phone = edtPhone.getText().toString();
-        String document = edtDocument.getText().toString();
-        String address = edtAddress.getText().toString();
-        String height = edtHeight.getText().toString();
-        String weight = edtWeight.getText().toString();
-
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPhone(phone);
-        user.setAddress(address);
-        user.setHeight(height);
-        user.setWeight(weight);
-        user.setDocument(document);
-        users.push().child("registered").setValue(user);
-
-        authUser();
-
-//       String chave = users.child("registred").getKey();
-
-    }
-
-    private void authUser() {
-        String user = edtEmail.getText().toString();
         String pass = edtPassword.getText().toString();
+
+
+//        users.push().child("registered").setValue(user);
+
         //Cadastrar usuario
         firebaseAuth.createUserWithEmailAndPassword(
-                user, pass)
+                email, pass)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             DatabaseReference users = databaseReference.child("users");
 
-                            String chave = users.child("registred").getKey();
-                            Log.i("signIn", "Chave: " + chave );
+
+                            String name = edtName.getText().toString();
+                            String phone = edtPhone.getText().toString();
+                            String document = edtDocument.getText().toString();
+                            String address = edtAddress.getText().toString();
+                            String height = edtHeight.getText().toString();
+                            String weight = edtWeight.getText().toString();
+
+
+                            User user = new User();
+                            user.setName(name);
+                            user.setEmail(firebaseAuth.getCurrentUser().getEmail());
+                            user.setPhone(phone);
+                            user.setAddress(address);
+                            user.setHeight(height);
+                            user.setWeight(weight);
+                            user.setDocument(document);
+                            users.child(firebaseAuth.getCurrentUser().getUid()).child("registered").setValue(user);
+
+
+
+
+
+
 
                             Log.i("CreateUser", "Sucesso ao cadastar usuario !");
                             openApp();
@@ -111,6 +124,11 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+//        authUser();
+
+//
+
     }
 
     private void openApp() {

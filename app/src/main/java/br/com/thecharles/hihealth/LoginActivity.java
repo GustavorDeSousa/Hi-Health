@@ -17,33 +17,52 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import br.com.thecharles.hihealth.model.User;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "User: ";
 
     private EditText edtEmail, edtPassword;
-    private Button btnLogin;
+    private Button btnLogin, fab;
 
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 
+//    private String userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        final DatabaseReference reference = databaseReference.child("users");
+
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(onLogin());
+        btnLogin.setOnClickListener(onLogin(reference));
 
-        DatabaseReference users =  databaseReference.child("users");
+
+
+
+//        FirebaseUser user = firebaseAuth.getCurrentUser();
+//        userID = user.getUid();
+
+
 
 
     }
+
 
     private View.OnClickListener onRegister() {
         return new View.OnClickListener() {
@@ -74,13 +93,14 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private View.OnClickListener onLogin() {
+    private View.OnClickListener onLogin(final DatabaseReference reference) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginUser();
+
                 //Verifica usuario logado
                 if (firebaseAuth.getCurrentUser() != null) {
+                    loginUser(reference);
                     Log.i("CurrentUser", "Usuario logado !");
                 } else {
                     Log.i("CurrentUser", "Usuario não logado !");
@@ -89,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
-    private void loginUser() {
+    private void loginUser(final DatabaseReference reference) {
         final String user = edtEmail.getText().toString();
         String pass = edtPassword.getText().toString();
 
@@ -99,15 +119,39 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            DatabaseReference users = databaseReference.child("users");
+//                            DatabaseReference users = databaseReference.child("users");
 
-                            String chave = users.child("registred").getKey();
-                            Log.i("signIn", "Chave: " + chave );
+                            Intent intent = new Intent(LoginActivity.this, BottomNavigationActivity.class);
+                            startActivity(intent);
+                            finish();
 
 
-                                Intent intent = new Intent(LoginActivity.this, BottomNavigationActivity.class);
-                                startActivity(intent);
-                                finish();
+                        /*    reference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    User usuario = new User();
+                                    usuario.setName(dataSnapshot.child(userID).child("registered").getValue(User.class).getName()); //set the name
+                                    usuario.setEmail(dataSnapshot.child(userID).child("registered").getValue(User.class).getEmail()); //set the email
+                                    usuario.setPhone(dataSnapshot.child(userID).child("registered").getValue(User.class).getPhone()); //set the phone_num
+
+                                    //display all the information
+                                    Log.d(TAG, "showData: Nome: " + usuario.getName());
+                                    Log.d(TAG, "showData: Email: " + usuario.getEmail());
+                                    Log.d(TAG, "showData: Telefone: " + usuario.getPhone());
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+*/
+//
+//                            String chave = users.child("registred").getKey();
+//                            Log.i("signIn", "Chave: " + chave );
+
+
 
                             Log.i("signIn", "Sucesso ao logar usuario !");
                         } else {

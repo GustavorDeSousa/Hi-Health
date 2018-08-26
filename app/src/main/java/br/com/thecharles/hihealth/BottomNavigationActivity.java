@@ -61,6 +61,10 @@ public class BottomNavigationActivity extends AppCompatActivity {
         Fragment dataFragment = DataFragment.newInstance();
         getSupportActionBar().setTitle(R.string.title_data);
         openFragment(dataFragment);
+
+
+
+
     }
 
 

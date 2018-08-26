@@ -20,54 +20,63 @@
         android:padding="16dp"
         android:background="#4b4b4b">
 
-        <TextView android:id="@+id/tvEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:fontFamily="casual"/>
 
-        <TextView android:id="@+id/tvName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:fontFamily="casual"/>
 
-        <TextView android:id="@+id/tvAddress"
+        <TextView
+            android:id="@+id/tvProfile"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:fontFamily="casual"/>
+            android:layout_height="match_parent"
+            android:textColor="#fff"/>
 
-        <TextView android:id="@+id/tvHeight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:fontFamily="casual"/>
 
-        <TextView android:id="@+id/tvWeight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:fontFamily="casual"/>
+        <!--<TextView android:id="@+id/tvEmail"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#fff"-->
+            <!--android:textSize="20sp"-->
+            <!--android:fontFamily="casual"/>-->
 
-        <TextView android:id="@+id/tvDocument"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:fontFamily="casual"/>
+        <!--<TextView android:id="@+id/tvName"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#fff"-->
+            <!--android:textSize="20sp"-->
+            <!--android:fontFamily="casual"/>-->
 
-        <TextView android:id="@+id/tvPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:fontFamily="casual"/>
+        <!--<TextView android:id="@+id/tvAddress"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#fff"-->
+            <!--android:textSize="20sp"-->
+            <!--android:fontFamily="casual"/>-->
+
+        <!--<TextView android:id="@+id/tvHeight"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#fff"-->
+            <!--android:textSize="20sp"-->
+            <!--android:fontFamily="casual"/>-->
+
+        <!--<TextView android:id="@+id/tvWeight"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#fff"-->
+            <!--android:textSize="20sp"-->
+            <!--android:fontFamily="casual"/>-->
+
+        <!--<TextView android:id="@+id/tvDocument"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#fff"-->
+            <!--android:textSize="20sp"-->
+            <!--android:fontFamily="casual"/>-->
+
+        <!--<TextView android:id="@+id/tvPhone"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#fff"-->
+            <!--android:textSize="20sp"-->
+            <!--android:fontFamily="casual"/>-->
 
 
 
