@@ -98,9 +98,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                loginUser(reference);
                 //Verifica usuario logado
                 if (firebaseAuth.getCurrentUser() != null) {
-                    loginUser(reference);
+
                     Log.i("CurrentUser", "Usuario logado !");
                 } else {
                     Log.i("CurrentUser", "Usuario não logado !");

@@ -2,39 +2,61 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/frag_heart">
+    android:background="@color/frag_heart"
+    android:id="@+id/fragmentA">
 
-
-    <FrameLayout android:id="@+id/fragmentA"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-        <TextView
-            android:id="@+id/tvRateHeart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:textAlignment="center"
-            android:fontFamily="casual"
-            android:textStyle="bold"
-            android:padding="8dp"
-            android:text=""/>
-
-
-<!--
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Batimento Cardiaco"
+            android:text="Batimentos Cardíacos"
             android:textSize="25sp"
+            android:textStyle="bold"
             android:textColor="#FFF"
+            android:layout_marginTop="8dp"
             android:textAlignment="center"
-            android:layout_gravity="center_vertical"
             android:lines="2"/>
--->
 
-    </FrameLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:src="@drawable/ic_favorite_black_24dp"/>
+
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="30dp">
+
+            <TextView
+                android:id="@+id/tvRateHeart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textAlignment="center"
+                android:paddingRight="2dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:maxLength="5"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                android:text="90"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:paddingLeft="2dp"
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:text="BPM"/>
+
+        </LinearLayout>
+
 
 </LinearLayout>

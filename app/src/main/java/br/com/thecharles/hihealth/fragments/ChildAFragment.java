@@ -23,24 +23,31 @@ import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.result.DailyTotalResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.model.Sensor;
+import br.com.thecharles.hihealth.model.User;
 
-public class ChildAFragment extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener{
+public class ChildAFragment extends Fragment {
 
+    private static final String TAG = "Heart";
     private TextView tvRateHeart;
 
-    private GoogleApiClient mGoogleApiClient;
 
-    private Context context = getContext();
+    private String userID;
 
-
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,101 +57,42 @@ public class ChildAFragment extends Fragment implements
 
         // Todo - Fazer os dados retornar corretamente
 
-//        mGoogleApiClient = new GoogleApiClient.Builder(ChildAFragment.this)
-//                .addApi(Fitness.HISTORY_API)
-//                .addScope(new Scope(Scopes.FITNESS_BODY_READ_WRITE))
-//                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
-//                .addScope(new Scope(Scopes.FITNESS_LOCATION_READ_WRITE))
-//                .addConnectionCallbacks(this)
-//                .build();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        userID = user.getUid();
+
+        DatabaseReference reference = databaseReference.child("users");
+
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Sensor sensor = new Sensor();
+                sensor.setHeartRate(dataSnapshot.child(userID)
+                        .child("sensor").getValue(Sensor.class).getHeartRate()); //set the heart
+
+
+                String heartRate = sensor.getHeartRate() + " BPM";
+                tvRateHeart.setText(heartRate);
+
+                //display all the information
+                Log.d(TAG, "showData: Heart: " + sensor.getHeartRate());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         return v;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()) {
-            case R.id.fragmentA: {
-                new ViewTodaysRateHeartTask().execute();
-                break;
-            }
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.e("HistoryAPI", "onConnected");
-
-    }
-
-    private void displayRateHeartDataForToday() {
-        DailyTotalResult result = Fitness.HistoryApi.readDailyTotal(
-                mGoogleApiClient, DataType.TYPE_HEART_RATE_BPM).await(1, TimeUnit.MINUTES);
-        showDataSet(result.getTotal());
-    }
-
-    private void showDataSet(DataSet dataSet) {
-        Log.e("History", "Data returned for Data type: " + dataSet.getDataType().getName());
-        DateFormat dateFormat = DateFormat.getDateInstance();
-        DateFormat timeFormat = DateFormat.getTimeInstance();
-
-
-
-
-        for (final DataPoint dp : dataSet.getDataPoints()) {
-            Log.e("History", "Data point:");
-            Log.e("History", "\tType: " + dp.getDataType().getName());
-            Log.e("History", "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS))
-                    + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-            Log.e("History", "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS))
-                    + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-
-            for(final Field field : dp.getDataType().getFields()) {
-
-                Log.e("History", "\tField: " + field.getName() +
-                        " Value: " + dp.getValue(field));
-
-                tvRateHeart.setText(String.valueOf(dp.getValue(field)) + " BPM");
-
-//                if(field.getName().equals(F)){
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                        if (dp.getDataType().getName().equals("com.google.heart_rate.summary")) {
-//                            tvRateHeart.setText(String.valueOf(dp.getValue(field)) + " BPM");
-//                        }
-
-//                    }
-//                });
-
-//                }
-
-            }
-        }
-    }
 
 
 
 
 
-    @Override
-    public void onConnectionSuspended(int i) {
 
-    }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    /** AssyncTasks */
-    private class ViewTodaysRateHeartTask extends AsyncTask<Void, Void, Void> {
-        protected Void doInBackground(Void... params) {
-            displayRateHeartDataForToday();
-            return null;
-        }
-    }
 }
