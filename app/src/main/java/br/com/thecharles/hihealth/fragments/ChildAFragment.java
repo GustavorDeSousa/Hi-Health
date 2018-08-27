@@ -71,7 +71,7 @@ public class ChildAFragment extends Fragment {
                         .child("sensor").getValue(Sensor.class).getHeartRate()); //set the heart
 
 
-                String heartRate = sensor.getHeartRate() + " BPM";
+                String heartRate = sensor.getHeartRate();
                 tvRateHeart.setText(heartRate);
 
                 //display all the information

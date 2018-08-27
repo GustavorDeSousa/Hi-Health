@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import br.com.thecharles.hihealth.model.Sensor;
 import br.com.thecharles.hihealth.model.User;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -95,6 +96,15 @@ public class RegisterActivity extends AppCompatActivity {
                             String weight = edtWeight.getText().toString();
 
 
+                            Sensor sensor = new Sensor();
+                            sensor.setHeartRate("0.0");
+                            sensor.setHeartRateMax("0.0");
+                            sensor.setHeartRateMin("0.0");
+                            sensor.setStepCount("0");
+
+                            users.child(firebaseAuth.getCurrentUser().getUid()).child("sensor").setValue(sensor);
+
+
                             User user = new User();
                             user.setName(name);
                             user.setEmail(firebaseAuth.getCurrentUser().getEmail());
@@ -104,7 +114,6 @@ public class RegisterActivity extends AppCompatActivity {
                             user.setWeight(weight);
                             user.setDocument(document);
                             users.child(firebaseAuth.getCurrentUser().getUid()).child("registered").setValue(user);
-
 
 
 
