@@ -76,10 +76,12 @@ public class ContactsFragment extends Fragment {
                             @Override
                             public void onItemClick(View view, int position) {
 
-//                                User selectedUser = listContacts.get(position);
+                                User selectedUser = listContacts.get(position);
 
                                 Intent intent = new Intent(getActivity(), ChatActivity.class);
-//                                intent.putExtra("chatContact", selectedUser);
+                                intent.putExtra("chatContact", selectedUser);
+                                Log.d(TAG, "Chat: " + selectedUser.getName() +
+                                        " - " + selectedUser.getEmail() + "\n");
                                 startActivity(intent);
                             }
 

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("CurrentUser", "Usuario logado !");
             Intent intent = new Intent(MainActivity.this, BottomNavigationActivity.class);
             startActivity(intent);
+            Toast.makeText(MainActivity.this, "Bem Vindo de Volta", Toast.LENGTH_SHORT).show();
         } else {
             Log.i("CurrentUser", "Usuario não logado !");
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);

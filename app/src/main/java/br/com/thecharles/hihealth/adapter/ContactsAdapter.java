@@ -48,7 +48,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         if (user.getPhoto() != null) {
 
         } else {
-            holder.photo.setImageResource(R.drawable.ic_account_circle_black_24dp);
+            holder.photo.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
         }
 
     }

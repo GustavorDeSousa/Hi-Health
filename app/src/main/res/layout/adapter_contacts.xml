@@ -11,11 +11,11 @@
         android:padding="10dp">
 
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivContacts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_account_circle_black_24dp" />
+            android:src="@drawable/com_facebook_profile_picture_blank_square" />
 
         <LinearLayout
             android:layout_width="0dp"
