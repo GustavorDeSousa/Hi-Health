@@ -27,7 +27,7 @@ import br.com.thecharles.hihealth.model.User;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView tvProfile;
+    private TextView tvProfile, tvName, tvAddress, tvHeight, tvWeight, tvBlood;
 
     private static final String TAG = "User: ";
 
@@ -35,12 +35,18 @@ public class ProfileFragment extends Fragment {
 
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private ValueEventListener valueEventListenerProfile;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        tvProfile = v.findViewById(R.id.tvProfile);
+//        tvProfile = v.findViewById(R.id.tvProfile);
+        tvName = v.findViewById(R.id.nmUsuario);
+        tvAddress = v.findViewById(R.id.txEndereco);
+        tvHeight = v.findViewById(R.id.txAltura);
+        tvWeight = v.findViewById(R.id.txPeso);
 
 
         DatabaseReference reference = databaseReference.child("users");
@@ -49,7 +55,7 @@ public class ProfileFragment extends Fragment {
         userID = user.getUid();
 
 
-        reference.addValueEventListener(new ValueEventListener() {
+       valueEventListenerProfile =  reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User usuario = new User();
@@ -64,11 +70,16 @@ public class ProfileFragment extends Fragment {
                 usuario.setBirthDay(dataSnapshot.child(userID).child("registered").getValue(User.class).getBirthDay()); //set the birthday
                 usuario.setBlood(dataSnapshot.child(userID).child("registered").getValue(User.class).getBlood()); //set the blood
 
-                String profile = usuario.getName() + "\n" + usuario.getEmail() + "\n" +
-                        usuario.getDocument() + "\n" + usuario.getHeight() + "\n" + usuario.getWeight() + "\n"
-                        + usuario.getAddress() + "\n" + usuario.getGenre() + "\n" + usuario.getBirthDay() + "\n"
-                        + usuario.getBlood() + "\n" + "...";
-                tvProfile.setText(profile);
+//                String profile = usuario.getName() + "\n" + usuario.getEmail() + "\n" +
+//                        usuario.getDocument() + "\n" + usuario.getHeight() + "\n" + usuario.getWeight() + "\n"
+//                        + usuario.getAddress() + "\n" + usuario.getGenre() + "\n" + usuario.getBirthDay() + "\n"
+//                        + usuario.getBlood() + "\n" + "...";
+//                tvProfile.setText(profile);
+
+                tvName.setText(usuario.getName());
+                tvAddress.setText(usuario.getAddress());
+                tvHeight.setText(usuario.getHeight());
+                tvWeight.setText(usuario.getWeight());
 
                 //display all the information
                 Log.d(TAG, "showData: Nome: " + usuario.getName());
