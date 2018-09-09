@@ -21,7 +21,8 @@
         <activity android:name=".dado2" />
         <activity
             android:name=".BottomNavigationActivity"
-            android:label="@string/title_activity_bottom_navigation"></activity>
+            android:label="@string/title_activity_bottom_navigation" />
+        <activity android:name=".PerfilActivity"></activity>
     </application>
 
 </manifest>
