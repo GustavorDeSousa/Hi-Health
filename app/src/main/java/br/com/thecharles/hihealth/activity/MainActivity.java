@@ -1,4 +1,4 @@
-package br.com.thecharles.hihealth;
+package br.com.thecharles.hihealth.activity;
 
 
 
@@ -11,6 +11,8 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import br.com.thecharles.hihealth.R;
 
 
 public class MainActivity extends AppCompatActivity {

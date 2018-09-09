@@ -1,4 +1,4 @@
-package br.com.thecharles.hihealth;
+package br.com.thecharles.hihealth.activity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
 
+import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.fragments.ContactsFragment;
 import br.com.thecharles.hihealth.fragments.DataFragment;
 import br.com.thecharles.hihealth.fragments.ProfileFragment;

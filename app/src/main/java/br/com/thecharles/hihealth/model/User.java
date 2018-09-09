@@ -1,16 +1,20 @@
 package br.com.thecharles.hihealth.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private String name;
     private String email;
     private String phone;
+    private String photo;
+    private boolean alert;
     private String birthDay;
     private String genre;
     private String document;
     private String address;
     private String height;
-    private String  weight;
+    private String weight;
     private String blood;
     private String obs;
 
@@ -41,6 +45,24 @@ public class User {
 
     public User setPhone(String phone) {
         this.phone = phone;
+        return this;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public User setPhoto(String photo) {
+        this.photo = photo;
+        return this;
+    }
+
+    public boolean isAlert() {
+        return alert;
+    }
+
+    public User setAlert(boolean alert) {
+        this.alert = alert;
         return this;
     }
 
