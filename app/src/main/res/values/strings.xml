@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Hi-Health</string>
-
+    <string name="google_maps_key">AIzaSyCWccuU1hk4AHAYTaEAe6fcI8znh5-K3wU</string>
     <!-- ... -->
     <string name="facebook_application_id" translatable="false">APP_ID</string>
     <!-- Facebook Application ID, prefixed by 'fb'. Enables Chrome Custom tabs. -->
@@ -26,4 +26,5 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
