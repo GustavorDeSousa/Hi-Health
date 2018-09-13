@@ -10,10 +10,11 @@ import android.widget.Button;
 
 import br.com.thecharles.hihealth.MapsActivity;
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.WalkMyAndroidActivity;
 
 public class ChildDFragment extends Fragment {
 
-    private Button btnMap;
+    private Button btnMap, btnGitbook;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -24,7 +25,20 @@ public class ChildDFragment extends Fragment {
         btnMap = view.findViewById(R.id.btnMapa);
         btnMap.setOnClickListener(openMap());
 
+        btnGitbook = view.findViewById(R.id.btnGitbook);
+        btnGitbook.setOnClickListener(openWalkMyAndroid());
+
         return view;
+    }
+
+    private View.OnClickListener openWalkMyAndroid() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), WalkMyAndroidActivity.class);
+                startActivity(intent);
+            }
+        };
     }
 
     private View.OnClickListener openMap() {
