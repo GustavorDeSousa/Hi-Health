@@ -3,4 +3,5 @@
     android:shape="rectangle">
 
     <solid android:color="#FFF"/>
+    <item android:drawable="@drawable/ic_warning_black_24dp"/>
 </shape>
