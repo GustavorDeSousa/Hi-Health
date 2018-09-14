@@ -1,4 +1,4 @@
-package br.com.thecharles.hihealth;
+package br.com.thecharles.hihealth.activity;
 
 import android.Manifest;
 import android.animation.AnimatorInflater;
@@ -22,9 +22,12 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
-public class WalkMyAndroidActivity extends AppCompatActivity implements  FetchAddressTask.OnTaskCompleted{
+import br.com.thecharles.hihealth.FetchAddressTask;
+import br.com.thecharles.hihealth.R;
+
+
+public class WalkMyAndroidActivity extends AppCompatActivity implements FetchAddressTask.OnTaskCompleted {
 
     private static final String TAG = "WalkMyAndroid";
 

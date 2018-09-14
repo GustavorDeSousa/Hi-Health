@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import br.com.thecharles.hihealth.MapsActivity;
+import br.com.thecharles.hihealth.activity.MapsActivity;
 import br.com.thecharles.hihealth.R;
-import br.com.thecharles.hihealth.WalkMyAndroidActivity;
+import br.com.thecharles.hihealth.activity.WalkMyAndroidActivity;
 
 public class ChildDFragment extends Fragment {
 
