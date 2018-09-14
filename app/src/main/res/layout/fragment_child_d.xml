@@ -7,7 +7,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:onClick="openMap">
 
         <TextView
             android:layout_width="match_parent"
@@ -19,6 +20,18 @@
             android:textAlignment="center"
             android:layout_gravity="center_vertical"
             android:lines="2"/>
+
+        <Button android:id="@+id/btnMapa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Abrir Mapa"/>
+
+
+        <Button
+            android:id="@+id/btnGitbook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gitbook" />
 
     </FrameLayout>
 
