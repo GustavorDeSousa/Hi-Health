@@ -32,6 +32,7 @@ public class WalkMyAndroidActivity extends AppCompatActivity implements  FetchAd
     private Button mLocationButton;
     private TextView mLocationTextView;
     private ImageView mAndroidImageView;
+    private AnimatorSet mRotateAnim;
 
     //Location Classes
     private boolean mTrackingLocation;
@@ -60,15 +61,38 @@ public class WalkMyAndroidActivity extends AppCompatActivity implements  FetchAd
              */
             @Override
             public void onClick(View v) {
-                getLocation();
+                if (!mTrackingLocation) {
+                    startTrackingLocation();
+                } else {
+                    stopTrackingLocation();
+                }
             }
         });
         mLocationTextView = findViewById(R.id.textview_location);
         mAndroidImageView = findViewById(R.id.imageview_android);
+        mRotateAnim = (AnimatorSet) AnimatorInflater.loadAnimator
+                (this, R.animator.rotate);
+
+        mRotateAnim.setTarget(mAndroidImageView);
+
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                // If tracking is turned on, reverse geocode into an address
+                if (mTrackingLocation) {
+                    new FetchAddressTask(WalkMyAndroidActivity.this, WalkMyAndroidActivity.this)
+                            .execute(locationResult.getLastLocation());
+                }
+            }
+        };
+
+
+
 
     }
 
-    private void getLocation() {
+    private void startTrackingLocation() {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -78,32 +102,58 @@ public class WalkMyAndroidActivity extends AppCompatActivity implements  FetchAd
         } else {
             Log.d(TAG, "getLocation: permissions granted");
 
-            mFusedLocationClient.getLastLocation().addOnSuccessListener(
-                    new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                mLastLocation = location;
-                                mLocationTextView.setText(
-                                        getString(R.string.location_text,
-                                                mLastLocation.getLatitude(),
-                                                mLastLocation.getLongitude(),
-                                                mLastLocation.getTime()));
+            mTrackingLocation = true;
+            mFusedLocationClient.requestLocationUpdates
+                    (getLocationRequest(),
+                            mLocationCallback,
+                            null /* Looper */);
 
-                                // Start the reverse geocode AsyncTask
-                                new FetchAddressTask(WalkMyAndroidActivity.this,
-                                        WalkMyAndroidActivity.this).execute(location);
 
-                                mLocationTextView.setText(getString(R.string.address_text,
+//            mFusedLocationClient.getLastLocation().addOnSuccessListener(
+//                    new OnSuccessListener<Location>() {
+//                        @Override
+//                        public void onSuccess(Location location) {
+//                            if (location != null) {
+//                                mLastLocation = location;
+//                                mLocationTextView.setText(
+//                                        getString(R.string.location_text,
+//                                                mLastLocation.getLatitude(),
+//                                                mLastLocation.getLongitude(),
+//                                                mLastLocation.getTime()));
+//
+//                                // Start the reverse geocode AsyncTask
+//                                new FetchAddressTask(WalkMyAndroidActivity.this,
+//                                        WalkMyAndroidActivity.this).execute(location);
+//
+//                                mLocationTextView.setText(getString(R.string.address_text,
+//                                        getString(R.string.loading),
+//                                        System.currentTimeMillis()));
+//                            } else {
+//                                mLocationTextView.setText(R.string.no_location);
+//                            }
+//                        }
+//                    }
+//            );
+
+            mLocationTextView.setText(getString(R.string.address_text,
                                         getString(R.string.loading),
                                         System.currentTimeMillis()));
-                            } else {
-                                mLocationTextView.setText(R.string.no_location);
-                            }
-                        }
-                    }
-            );
+            mLocationButton.setText(R.string.stop_tracking_location);
+            mRotateAnim.start();
+        }
+    }
 
+    /**
+     * Method that stops tracking the device. It removes the location
+     * updates, stops the animation and reset the UI.
+     */
+    private void stopTrackingLocation() {
+        if (mTrackingLocation) {
+            mTrackingLocation = false;
+            mLocationButton.setText(R.string.start_tracking_location);
+            mLocationTextView.setText(R.string.textview_hint);
+            mRotateAnim.end();
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         }
     }
 
@@ -116,7 +166,7 @@ public class WalkMyAndroidActivity extends AppCompatActivity implements  FetchAd
                 // otherwise, show a Toast
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getLocation();
+                    startTrackingLocation();
                 } else {
                     Toast.makeText(this,
                             R.string.location_permission_denied,
@@ -132,6 +182,16 @@ public class WalkMyAndroidActivity extends AppCompatActivity implements  FetchAd
         mLocationTextView.setText(getString(R.string.address_text,
                 result, System.currentTimeMillis()));
     }
+
+    private LocationRequest getLocationRequest() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return locationRequest;
+    }
+
+
 }
 
 
