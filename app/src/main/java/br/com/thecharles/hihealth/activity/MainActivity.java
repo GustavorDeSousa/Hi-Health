@@ -128,9 +128,10 @@ public class MainActivity extends AppCompatActivity implements
     private void openFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container, fragment);
-        transaction.addToBackStack(null);
+//        transaction.addToBackStack(null);
         transaction.commit();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
