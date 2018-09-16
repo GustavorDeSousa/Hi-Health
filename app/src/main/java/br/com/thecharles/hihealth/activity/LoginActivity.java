@@ -14,13 +14,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import br.com.thecharles.hihealth.FetchAddressTask;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
+import br.com.thecharles.hihealth.model.Sensor;
+import br.com.thecharles.hihealth.model.User;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -49,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(onLogin(reference));
+        btnLogin.setOnClickListener(onLogin());
 
 
 
@@ -62,42 +64,42 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+//
+//    private View.OnClickListener onRegister() {
+//        return new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                registerUser();
+//            }
+//        };
+//    }
+//
+//    private void registerUser() {
+//        String user = edtEmail.getText().toString();
+//        String pass = edtPassword.getText().toString();
+//        //Cadastrar usuario
+//        firebaseAuth.createUserWithEmailAndPassword(
+//                user, pass)
+//                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            Log.i("CreateUser", "Sucesso ao cadastar usuario !");
+//                        } else {
+//
+//                            Log.i("CreateUser", "Erro ao cadastar usuario !");
+//
+//                        }
+//                    }
+//                });
+//    }
 
-    private View.OnClickListener onRegister() {
+    private View.OnClickListener onLogin() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUser();
-            }
-        };
-    }
 
-    private void registerUser() {
-        String user = edtEmail.getText().toString();
-        String pass = edtPassword.getText().toString();
-        //Cadastrar usuario
-        firebaseAuth.createUserWithEmailAndPassword(
-                user, pass)
-                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.i("CreateUser", "Sucesso ao cadastar usuario !");
-                        } else {
-
-                            Log.i("CreateUser", "Erro ao cadastar usuario !");
-
-                        }
-                    }
-                });
-    }
-
-    private View.OnClickListener onLogin(final DatabaseReference reference) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                loginUser(reference);
+                validateUser();
                 //Verifica usuario logado
 //                if (firebaseAuth.getCurrentUser() != null) {
 //
@@ -109,25 +111,100 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
-    private void loginUser(final DatabaseReference reference) {
-        final String user = edtEmail.getText().toString();
-        String pass = edtPassword.getText().toString();
+    private void validateUser() {
+        String userEmail = edtEmail.getText().toString();
+        String userPass = edtPassword.getText().toString();
 
-        //Logar usuario
-        firebaseAuth.signInWithEmailAndPassword(user, pass)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-//                            DatabaseReference users = databaseReference.child("users");
-//                            FirebaseUser userAtual = firebaseAuth.getCurrentUser();
-//                            Toast.makeText(LoginActivity.this,
-//                                    "Seja bem vindo: " + userAtual.getDisplayName(), Toast.LENGTH_SHORT).show();
-                            if (firebaseAuth.getCurrentUser() != null) {
-                                Intent intent = new Intent(LoginActivity.this, BottomNavigationActivity.class);
-                                startActivity(intent);
-                            }
+        if( !userEmail.isEmpty() ){//verifica e-mail
+            if ( !userPass.isEmpty() ){
 
+                User user = new User();
+                user.setEmail(userEmail);
+                user.setPassword(userPass);
+
+                loginUserFirebase(user);
+
+            }else {
+                Toast.makeText(LoginActivity.this,
+                        "Preencha a senha!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            Toast.makeText(LoginActivity.this,
+                    "Preencha o email!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void loginUserFirebase(final User user) {
+        firebaseAuth = SettingsFirebase.getFirebaseAutenticacao();
+        firebaseAuth.signInWithEmailAndPassword(
+                user.getEmail(), user.getPassword()
+        ).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+
+                    openIntent(BottomNavigationActivity.class);
+//                    Toast.makeText(BottomNavigationActivity.this,
+//                                    "Seja bem vindo: " + user.getName(), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    String exception = "";
+                    try {
+                        throw task.getException();
+                    }catch ( FirebaseAuthInvalidUserException e ) {
+                        exception = "Usuário não está cadastrado.";
+                        openIntent(RegisterActivity.class);
+                    }catch ( FirebaseAuthInvalidCredentialsException e ){
+                        exception = "E-mail e senha não correspondem a um usuário cadastrado";
+                    }catch (Exception e){
+                        exception = "Erro ao cadastrar usuário: "  + e.getMessage();
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(LoginActivity.this,
+                            exception,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void openIntent(Class classOpen) {
+        Intent intent = new Intent(LoginActivity.this, classOpen);
+        startActivity( intent );
+        finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if ( currentUser != null ){
+            openIntent(BottomNavigationActivity.class);
+        }
+    }
+
+}
+
+
+//        //Logar usuario
+//        firebaseAuth.signInWithEmailAndPassword(user, pass)
+//                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+////                            DatabaseReference users = databaseReference.child("users");
+////                            FirebaseUser userAtual = firebaseAuth.getCurrentUser();
+////                            Toast.makeText(LoginActivity.this,
+////                                    "Seja bem vindo: " + userAtual.getDisplayName(), Toast.LENGTH_SHORT).show();
+//                            if (firebaseAuth.getCurrentUser() != null) {
+//                                Intent intent = new Intent(LoginActivity.this, BottomNavigationActivity.class);
+//                                startActivity(intent);
+//                            }
+//
 
                         /*    reference.addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -156,18 +233,19 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-                            Log.i("signIn", "Sucesso ao logar usuario !");
-                        } else {
-
-                            Log.i("signIn", "Erro ao logar usuario !");
-                            Toast.makeText(LoginActivity.this,
-                                    "Usuário não Encontrado !", Toast.LENGTH_SHORT).show();
-                            finish();
-
-
-                        }
-                    }
-                });
-
-    }
-}
+//                            Log.i("signIn", "Sucesso ao logar usuario !");
+//                        } else {
+//
+//                            Log.i("signIn", "Erro ao logar usuario !");
+//                            Toast.makeText(LoginActivity.this,
+//                                    "Usuário não Encontrado !", Toast.LENGTH_SHORT).show();
+//                            finish();
+//
+//
+//                        }
+//                    }
+//                });
+//
+//    }
+//    }
+//}

@@ -26,7 +26,7 @@ import br.com.thecharles.hihealth.model.User;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private static final String TAG = "User: ";
+    private static final String TAG = RegisterActivity.class.getSimpleName();
     private Button btnRegister;
     private EditText edtName, edtEmail, edtPassword, edtPhone,
             edtAddress, edtHeight, edtWeight;
