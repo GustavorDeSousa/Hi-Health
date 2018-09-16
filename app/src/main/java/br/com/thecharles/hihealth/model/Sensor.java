@@ -1,12 +1,25 @@
 package br.com.thecharles.hihealth.model;
 
+import com.google.firebase.database.DatabaseReference;
+
+import br.com.thecharles.hihealth.config.SettingsFirebase;
+
 public class Sensor {
 
     private String heartRate;
     private String heartRateMax;
     private String heartRateMin;
-
     private String stepCount;
+
+
+    public void save(String uId) {
+        DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
+        DatabaseReference firebaseRefDebug = database.child("debug");
+        DatabaseReference sendor = firebaseRefDebug.child("users").child(uId).child("sensor");
+
+        sendor.setValue(this);
+    }
+
 
     public Sensor() {
     }

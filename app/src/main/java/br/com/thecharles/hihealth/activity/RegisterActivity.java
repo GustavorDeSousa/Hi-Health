@@ -14,6 +14,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DatabaseReference;
 
 import br.com.thecharles.hihealth.R;
@@ -63,83 +66,159 @@ public class RegisterActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUserData();
-//                registerUserFirebase();
+                validateUser();
             }
         };
     }
 
-//    public void registerUserFirebase() {
-//
-//
-//    }
+    public void registerUserFirebase(final User user, final Sensor sensor) {
 
-    public void registerUserData() {
+        firebaseAuth = SettingsFirebase.getFirebaseAutenticacao();
+        firebaseAuth.createUserWithEmailAndPassword(
+                user.getEmail(), user.getPassword()
+        ).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+
+                    Toast.makeText(RegisterActivity.this, "Usuário cadastrado com Sucesso",
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+
+                    try {
+                        String userId = firebaseAuth.getCurrentUser().getUid();
+                        user.setId(userId);
+                        user.save(userId);
+                        sensor.save(userId);
+
+                        openApp();
+
+                    } catch (Exception e ) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+
+                    String exception = "";
+                    try {
+                        throw task.getException();
+                    }catch ( FirebaseAuthWeakPasswordException e){
+                        exception = "Digite uma senha mais forte!";
+                    }catch ( FirebaseAuthInvalidCredentialsException e){
+                        exception= "Por favor, digite um e-mail válido";
+                    }catch ( FirebaseAuthUserCollisionException e){
+                        exception = "Este conta já foi cadastrada";
+                    }catch (Exception e){
+                        exception = "Erro ao cadastrar usuário: "  + e.getMessage();
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(RegisterActivity.this,
+                            exception,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+//
+
+    public void validateUser() {
 //        DatabaseReference users = databaseReference.child("users");
 
+        //Recuperar textos dos campos
         String email = edtEmail.getText().toString();
         String pass = edtPassword.getText().toString();
+        String name = edtName.getText().toString();
+        String phone = edtPhone.getText().toString();
+        String address = edtAddress.getText().toString();
+        String height = edtHeight.getText().toString();
+        String weight = edtWeight.getText().toString();
+
+        if( !name.isEmpty() ){//verifica nome
+            if( !email.isEmpty() ){//verifica e-mail
+                if ( !pass.isEmpty() ){
+
+
+                    User user = new User();
+//        user.setId(firebaseAuth.getCurrentUser().getUid());
+                    user.setName(name);
+                    user.setEmail(email);
+                    user.setPassword(pass);
+                    user.setPhone(phone);
+                    user.setAddress(address);
+                    user.setHeight(height);
+                    user.setWeight(weight);
+
+                    Sensor sensor = new Sensor();
+                    sensor.setHeartRate("0.0");
+                    sensor.setHeartRateMax("0.0");
+                    sensor.setHeartRateMin("0.0");
+                    sensor.setStepCount("0");
+
+                    registerUserFirebase(user, sensor);
+
+
+                }else {
+                    Toast.makeText(RegisterActivity.this,
+                            "Preencha a senha!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }else {
+                Toast.makeText(RegisterActivity.this,
+                        "Preencha o email!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            Toast.makeText(RegisterActivity.this,
+                    "Preencha o nome!",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
 
 
 //        users.push().child("registered").setValue(user);
 
         //Cadastrar usuario
-        firebaseAuth.createUserWithEmailAndPassword(
-                email, pass)
-                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            DatabaseReference users = firebaseRefDebug.child("users");
-
-//                            String pushKey = users.push().getKey();
-
-                            String name = edtName.getText().toString();
-                            String phone = edtPhone.getText().toString();
-                            String address = edtAddress.getText().toString();
-                            String height = edtHeight.getText().toString();
-                            String weight = edtWeight.getText().toString();
-
-
-                            Sensor sensor = new Sensor();
-                            sensor.setHeartRate("0.0");
-                            sensor.setHeartRateMax("0.0");
-                            sensor.setHeartRateMin("0.0");
-                            sensor.setStepCount("0");
-
-                            users.child(firebaseAuth.getCurrentUser().getUid()).child("sensor").setValue(sensor);
-
-
-                            User user = new User();
-                            user.setId(firebaseAuth.getCurrentUser().getUid());
-                            user.setName(name);
-                            user.setEmail(firebaseAuth.getCurrentUser().getEmail());
-                            user.setPhone(phone);
-                            user.setAddress(address);
-                            user.setHeight(height);
-                            user.setWeight(weight);
-
-                            users.child(firebaseAuth.getCurrentUser().getUid()).child("registered").setValue(user);
-//                            users.child(pushKey).child("registered").setValue(user);
-
-
-
-
-
-
-                            Log.i("CreateUser", "Sucesso ao cadastar usuario !");
-                            openApp();
-                            Toast.makeText(RegisterActivity.this, "Usuário cadastrado com Sucesso",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-
-                            Log.i("CreateUser", "Erro ao cadastar usuario !");
-                            finish();
-                            Toast.makeText(RegisterActivity.this, "Erro ao cadastrar Usuário",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+//        firebaseAuth.createUserWithEmailAndPassword(
+//                email, pass)
+//                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+////                            DatabaseReference users = firebaseRefDebug.child("users");
+//
+////                            String pushKey = users.push().getKey();
+//
+//
+//
+////                            users.child(firebaseAuth.getCurrentUser().getUid()).child("sensor").setValue(sensor);
+//
+////
+//
+////                            users.child(firebaseAuth.getCurrentUser().getUid()).child("registered").setValue(user);
+////                            users.child(pushKey).child("registered").setValue(user);
+//
+//
+//
+//
+//
+//                            Log.i("CreateUser", "Sucesso ao cadastar usuario !");
+//                            openApp();
+//                            Toast.makeText(RegisterActivity.this, "Usuário cadastrado com Sucesso",
+//                                    Toast.LENGTH_SHORT).show();
+//                        } else {
+//
+//                            Log.i("CreateUser", "Erro ao cadastar usuario !");
+//                            finish();
+//                            Toast.makeText(RegisterActivity.this, "Erro ao cadastrar Usuário",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
 
 //        authUser();
 

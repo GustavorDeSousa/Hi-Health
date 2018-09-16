@@ -1,12 +1,18 @@
 package br.com.thecharles.hihealth.model;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
+
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 
 public class User implements Serializable {
 
     private String id;
     private String name;
     private String email;
+    private String password;
     private String phone;
     private String photo;
     private boolean alert;
@@ -20,6 +26,14 @@ public class User implements Serializable {
     private String obs;
 
     public User() {
+    }
+
+    public void save(String uId) {
+        DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
+        DatabaseReference firebaseRefDebug = database.child("debug");
+        DatabaseReference user = firebaseRefDebug.child("users").child(uId).child("registered");
+
+        user.setValue(this);
     }
 
     public String getId() {
@@ -46,6 +60,16 @@ public class User implements Serializable {
 
     public User setEmail(String email) {
         this.email = email;
+        return this;
+    }
+
+    @Exclude
+    public String getPassword() {
+        return password;
+    }
+
+    public User setPassword(String password) {
+        this.password = password;
         return this;
     }
 
