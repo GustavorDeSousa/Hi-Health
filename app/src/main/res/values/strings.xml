@@ -24,9 +24,6 @@
     <string name="stop_tracking_location">Stop tracking location</string>
 
 
-
-
-
     <!-- ... -->
     <string name="facebook_application_id" translatable="false">APP_ID</string>
     <!-- Facebook Application ID, prefixed by 'fb'. Enables Chrome Custom tabs. -->
@@ -54,4 +51,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
