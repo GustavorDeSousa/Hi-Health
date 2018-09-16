@@ -229,7 +229,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void openApp() {
 
         Intent intent = new Intent(
-                RegisterActivity.this, BottomNavigationActivity.class);
+                RegisterActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
         //Verifica usuario logado

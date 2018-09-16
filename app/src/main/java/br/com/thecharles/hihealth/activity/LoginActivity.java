@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
-import br.com.thecharles.hihealth.model.Sensor;
 import br.com.thecharles.hihealth.model.User;
 
 public class LoginActivity extends AppCompatActivity {
@@ -146,8 +144,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
 
-                    openIntent(BottomNavigationActivity.class);
-//                    Toast.makeText(BottomNavigationActivity.this,
+                    openIntent(MainActivity.class);
+//                    Toast.makeText(MainActivity.this,
 //                                    "Seja bem vindo: " + user.getName(), Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -178,14 +176,6 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if ( currentUser != null ){
-            openIntent(BottomNavigationActivity.class);
-        }
-    }
 
 }
 
@@ -201,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
 ////                            Toast.makeText(LoginActivity.this,
 ////                                    "Seja bem vindo: " + userAtual.getDisplayName(), Toast.LENGTH_SHORT).show();
 //                            if (firebaseAuth.getCurrentUser() != null) {
-//                                Intent intent = new Intent(LoginActivity.this, BottomNavigationActivity.class);
+//                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //                                startActivity(intent);
 //                            }
 //

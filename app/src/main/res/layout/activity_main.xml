@@ -1,101 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent"
+    tools:context=".activity.MainActivity"
+    android:orientation="vertical">
 
 
-    <LinearLayout android:layout_height="match_parent"
+
+
+    <LinearLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@drawable/fundo">
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/logo"
-            android:scaleType="fitCenter"
-            android:paddingLeft="100dp"
-            android:paddingRight="100dp" />
-
-        <Button android:id="@+id/btnLogIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_rose"
-            android:text="entrar"
-            android:textColor="#FFF"
-            android:textStyle="bold"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginBottom="15dp"
-            android:onClick="onLogin"
-            />
-        <View
-            android:id="@+id/Divisor"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="#A8A8A8"/>
-
-        <Button android:id="@+id/btnSignIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_green"
-            android:text="cadastrar-se"
-            android:textColor="#FFF"
-            android:textStyle="bold"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="15dp"
-            />
-
-       <!-- <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_gray"
-            android:text="entra com google"
-            android:textColor="#FFF"
-            android:textStyle="bold"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="15dp"
-            android:drawableLeft="@drawable/google"
-            />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_blue"
-            android:text="entrar com o facebook"
-            android:textColor="#FFF"
-            android:textStyle="bold"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="15dp"
-            android:drawableLeft="@drawable/facebook"
-            />-->
 
     </LinearLayout>
 
+    <!--TODO - Melhorar o esquema de cores -->
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/navigation" />
+
 </LinearLayout>
-
-
-<!--
- <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="App em Desenvolvimento"
-        android:textSize="30sp"
-        android:textColor="#fff"
-        android:textAlignment="center"
-        android:fontFamily="casual"
-        android:background="#000"/>
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start"/>
--->
