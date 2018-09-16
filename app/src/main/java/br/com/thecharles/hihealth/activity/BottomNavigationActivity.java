@@ -35,6 +35,7 @@ import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.fragments.ContactsFragment;
 import br.com.thecharles.hihealth.fragments.DataFragment;
 import br.com.thecharles.hihealth.fragments.ProfileFragment;
@@ -50,7 +51,10 @@ public class BottomNavigationActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
 
     private String heartRate = "0.0";
     private String heartRateMax = "0.0";
@@ -238,7 +242,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements
                         " Value: " + dp.getValue(field));
 
                 DatabaseReference reference =
-                        databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid());
+                        firebaseRefDebug.child("users").child(firebaseAuth.getCurrentUser().getUid());
 
 
 

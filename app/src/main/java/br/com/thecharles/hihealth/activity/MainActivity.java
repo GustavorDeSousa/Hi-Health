@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +30,10 @@ public class MainActivity extends AppCompatActivity {
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 

@@ -35,6 +35,7 @@ import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.model.Sensor;
 import br.com.thecharles.hihealth.model.User;
 
@@ -46,8 +47,11 @@ public class ChildAFragment extends Fragment {
 
     private String userID;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class ChildAFragment extends Fragment {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         userID = user.getUid();
 
-        DatabaseReference reference = databaseReference.child("users");
+        DatabaseReference reference = firebaseRefDebug.child("users");
 
 
         reference.addValueEventListener(new ValueEventListener() {

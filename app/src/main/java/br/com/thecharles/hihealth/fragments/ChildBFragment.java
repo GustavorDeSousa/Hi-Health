@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.model.Sensor;
 
 public class ChildBFragment extends Fragment {
@@ -26,7 +27,10 @@ public class ChildBFragment extends Fragment {
 
     private String userID;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
+
+//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 
@@ -40,7 +44,7 @@ public class ChildBFragment extends Fragment {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         userID = user.getUid();
 
-        DatabaseReference reference = databaseReference.child("users");
+        DatabaseReference reference = firebaseRefDebug.child("users");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override

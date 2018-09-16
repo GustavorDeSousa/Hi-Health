@@ -15,9 +15,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.model.Sensor;
 import br.com.thecharles.hihealth.model.User;
 
@@ -25,10 +25,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "User: ";
     private Button btnRegister;
-    private EditText edtName, edtEmail, edtPassword, edtPhone, edtDocument,
+    private EditText edtName, edtEmail, edtPassword, edtPhone,
             edtAddress, edtHeight, edtWeight;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 //    private String userID;
@@ -46,7 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         edtPhone = findViewById(R.id.edtPhone);
-        edtDocument = findViewById(R.id.edtDocument);
         edtAddress = findViewById(R.id.edtAddress);
         edtHeight = findViewById(R.id.edtHeight);
         edtWeight = findViewById(R.id.edtWeight);
@@ -61,12 +63,18 @@ public class RegisterActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveUserData();
+                registerUserData();
+//                registerUserFirebase();
             }
         };
     }
 
-    private void saveUserData() {
+//    public void registerUserFirebase() {
+//
+//
+//    }
+
+    public void registerUserData() {
 //        DatabaseReference users = databaseReference.child("users");
 
         String email = edtEmail.getText().toString();
@@ -82,12 +90,12 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            DatabaseReference users = databaseReference.child("users");
+                            DatabaseReference users = firebaseRefDebug.child("users");
 
+//                            String pushKey = users.push().getKey();
 
                             String name = edtName.getText().toString();
                             String phone = edtPhone.getText().toString();
-                            String document = edtDocument.getText().toString();
                             String address = edtAddress.getText().toString();
                             String height = edtHeight.getText().toString();
                             String weight = edtWeight.getText().toString();
@@ -103,14 +111,16 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                             User user = new User();
+                            user.setId(firebaseAuth.getCurrentUser().getUid());
                             user.setName(name);
                             user.setEmail(firebaseAuth.getCurrentUser().getEmail());
                             user.setPhone(phone);
                             user.setAddress(address);
                             user.setHeight(height);
                             user.setWeight(weight);
-                            user.setDocument(document);
+
                             users.child(firebaseAuth.getCurrentUser().getUid()).child("registered").setValue(user);
+//                            users.child(pushKey).child("registered").setValue(user);
 
 
 

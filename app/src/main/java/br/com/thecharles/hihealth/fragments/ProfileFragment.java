@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.model.User;
 
 public class ProfileFragment extends Fragment {
@@ -33,7 +34,9 @@ public class ProfileFragment extends Fragment {
 
     private String userID;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private ValueEventListener valueEventListenerProfile;
 
@@ -49,7 +52,7 @@ public class ProfileFragment extends Fragment {
         tvWeight = v.findViewById(R.id.txPeso);
 
 
-        DatabaseReference reference = databaseReference.child("users");
+        DatabaseReference reference = firebaseRefDebug.child("users");
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
         userID = user.getUid();

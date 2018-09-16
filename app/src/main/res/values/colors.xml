@@ -17,4 +17,7 @@
     <color name="frag_velocity">#883997</color>
     <color name="frag_height">#EE98FB</color>
     <color name="frag_location">#C7437C</color>
+
+    <color name="balaoSender">#504dd0e1</color>
+    <color name="balaoReceiver">#50ff4081</color>
 </resources>

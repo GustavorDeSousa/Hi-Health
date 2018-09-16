@@ -18,15 +18,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import br.com.thecharles.hihealth.FetchAddressTask;
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "User: ";
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     private EditText edtEmail, edtPassword;
     private Button btnLogin, fab;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -39,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 
-        final DatabaseReference reference = databaseReference.child("users");
+        final DatabaseReference reference = firebaseRefDebug.child("users");
 
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);

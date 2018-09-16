@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
+    private String id;
     private String name;
     private String email;
     private String phone;
@@ -19,6 +20,15 @@ public class User implements Serializable {
     private String obs;
 
     public User() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public User setId(String id) {
+        this.id = id;
+        return this;
     }
 
     public String getName() {

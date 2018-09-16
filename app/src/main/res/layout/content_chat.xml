@@ -16,6 +16,7 @@
         android:scrollbars="vertical">
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerMessages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -42,13 +43,13 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/editMsg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/white"
                 android:hint="Reply"
-                android:textColor="#C0CCDA"
+                android:textColor="#000000"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:layout_marginLeft="16dp"/>
@@ -62,9 +63,11 @@
 
 
             <ImageView
+                android:id="@+id/sendMsg"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="8dp"
+                android:onClick="sendMessage"
                 app:srcCompat="@drawable/ic_send_black_24dp" />
         </LinearLayout>
     </LinearLayout>

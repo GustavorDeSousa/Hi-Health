@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.activity.ChatActivity;
 import br.com.thecharles.hihealth.adapter.ContactsAdapter;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.helper.RecyclerItemClickListener;
 import br.com.thecharles.hihealth.model.User;
 
@@ -37,7 +38,11 @@ public class ContactsFragment extends Fragment {
     private RecyclerView recyclerViewListContacts;
     private ContactsAdapter adapter;
     private ArrayList<User> listContacts = new ArrayList<>();
-    private DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference();
+//    private DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference();
+
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
+
     private ValueEventListener valueEventListenerContacts;
     private FirebaseUser userCurrent;
 //    FirebaseUser userCurrent = firebaseAuth.getCurrentUser();
@@ -54,7 +59,7 @@ public class ContactsFragment extends Fragment {
 //        FirebaseUser userCurrent = firebaseAuth.getCurrentUser();
 //        userID = user.getUid();
         recyclerViewListContacts = view.findViewById(R.id.rvListContacts);
-        usersRef = usersRef.child("users");
+        firebaseRefDebug = firebaseRefDebug.child("users");
         userCurrent = FirebaseAuth.getInstance().getCurrentUser();
         swtich = view.findViewById(R.id.sAlert);
 
@@ -109,11 +114,11 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        usersRef.removeEventListener(valueEventListenerContacts);
+        firebaseRefDebug.removeEventListener(valueEventListenerContacts);
     }
 
     public void getContacts() {
-       valueEventListenerContacts =  usersRef.addValueEventListener(new ValueEventListener() {
+       valueEventListenerContacts =  firebaseRefDebug.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dados: dataSnapshot.getChildren())  {
