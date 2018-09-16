@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Notificações"
+            android:text="Chatbot"
             android:textStyle="bold"
             android:textSize="25sp"
             android:textColor="#FFF"
