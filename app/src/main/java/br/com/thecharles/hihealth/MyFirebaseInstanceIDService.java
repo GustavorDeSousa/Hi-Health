@@ -1,12 +1,21 @@
 package br.com.thecharles.hihealth;
 
-import android.app.Service;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import br.com.thecharles.hihealth.config.SettingsFirebase;
+import br.com.thecharles.hihealth.helper.UserFirebase;
+import br.com.thecharles.hihealth.model.User;
+
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
+
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     private static final String TAG = FirebaseInstanceIdService.class.getSimpleName();
 
@@ -20,6 +29,19 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         sendRegistrationToServer(refreshedToken);
+
+        registerToken(refreshedToken);
+    }
+
+    private void registerToken(String refreshedToken) {
+        String idUserSender = UserFirebase.getUId();
+        DatabaseReference reference =
+                firebaseRefDebug.child("users").child(idUserSender);
+        User user = new User();
+        user.setToken(refreshedToken);
+
+        reference.child("registered").child("token").setValue(refreshedToken);
+
     }
 
     /**

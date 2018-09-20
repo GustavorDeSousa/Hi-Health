@@ -10,6 +10,7 @@ import br.com.thecharles.hihealth.config.SettingsFirebase;
 public class User implements Serializable {
 
     private String id;
+    private String token;
     private String name;
     private String email;
     private String password;
@@ -43,6 +44,14 @@ public class User implements Serializable {
     public User setId(String id) {
         this.id = id;
         return this;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getName() {
