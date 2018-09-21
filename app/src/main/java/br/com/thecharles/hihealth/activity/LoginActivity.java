@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
+import br.com.thecharles.hihealth.MyFirebaseInstanceIDService;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.model.User;
@@ -116,9 +117,11 @@ public class LoginActivity extends AppCompatActivity {
         if( !userEmail.isEmpty() ){//verifica e-mail
             if ( !userPass.isEmpty() ){
 
+
                 User user = new User();
                 user.setEmail(userEmail);
                 user.setPassword(userPass);
+
 
                 loginUserFirebase(user);
 

@@ -27,9 +27,19 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
+    private String tokenDevice;
+
     private static final String TAG = FirebaseInstanceIdService.class.getSimpleName();
     private static final String SEND_TOKEN_SERVICE_URL =
             "http://yourAppServer/instanceTokenService";
+
+    public String getTokenDevice() {
+        return tokenDevice;
+    }
+
+    public void setTokenDevice(String tokenDevice) {
+        this.tokenDevice = tokenDevice;
+    }
 
     @Override
     public void onTokenRefresh() {
@@ -37,12 +47,23 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
+        setTokenDevice(refreshedToken);
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
 
-        registerToken(refreshedToken);
+
+//        sendRegistrationToServer(refreshedToken);
+//
+//        registerToken(refreshedToken);
+
+
+    }
+
+    public String getToken() {
+
+        onTokenRefresh();
+        return getTokenDevice();
     }
 
     private void registerToken(String refreshedToken) {

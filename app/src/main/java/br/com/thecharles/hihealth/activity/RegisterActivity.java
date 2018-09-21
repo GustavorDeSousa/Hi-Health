@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DatabaseReference;
 
+import br.com.thecharles.hihealth.MyFirebaseInstanceIDService;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.model.Sensor;
@@ -139,6 +140,9 @@ public class RegisterActivity extends AppCompatActivity {
             if( !email.isEmpty() ){//verifica e-mail
                 if ( !pass.isEmpty() ){
 
+                    MyFirebaseInstanceIDService myFirebaseInstanceIDService = new MyFirebaseInstanceIDService();
+                    String token = myFirebaseInstanceIDService.getToken();
+                    Toast.makeText(RegisterActivity.this, "", Toast.LENGTH_SHORT).show();
 
                     User user = new User();
 //        user.setId(firebaseAuth.getCurrentUser().getUid());
@@ -149,6 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
                     user.setAddress(address);
                     user.setHeight(height);
                     user.setWeight(weight);
+                    user.setToken(token);
 
                     Sensor sensor = new Sensor();
                     sensor.setHeartRate("0.0");
