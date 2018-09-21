@@ -1,9 +1,9 @@
 package br.com.thecharles.hihealth.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +15,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 import br.com.thecharles.hihealth.MyFirebaseInstanceIDService;
@@ -114,6 +113,10 @@ public class LoginActivity extends AppCompatActivity {
         String userEmail = edtEmail.getText().toString();
         String userPass = edtPassword.getText().toString();
 
+        MyFirebaseInstanceIDService myFirebaseInstanceIDService = new MyFirebaseInstanceIDService();
+        String token = myFirebaseInstanceIDService.getToken();
+//        Toast.makeText(LoginActivity.this, "Token Renovado", Toast.LENGTH_SHORT).show();
+
         if( !userEmail.isEmpty() ){//verifica e-mail
             if ( !userPass.isEmpty() ){
 
@@ -121,9 +124,10 @@ public class LoginActivity extends AppCompatActivity {
                 User user = new User();
                 user.setEmail(userEmail);
                 user.setPassword(userPass);
+                user.setToken(token);
 
 
-                loginUserFirebase(user);
+                loginUserFirebase(user, token);
 
             }else {
                 Toast.makeText(LoginActivity.this,
@@ -138,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void loginUserFirebase(final User user) {
+    public void loginUserFirebase(final User user, final String tokenDevice) {
         firebaseAuth = SettingsFirebase.getFirebaseAutenticacao();
         firebaseAuth.signInWithEmailAndPassword(
                 user.getEmail(), user.getPassword()
@@ -147,6 +151,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
 
+
+                    firebaseRefDebug.child("users")
+                            .child(firebaseAuth.getCurrentUser().getUid())
+                            .child("registered")
+                            .child("token").setValue(tokenDevice);
+
+
+//                    user.setToken(tokenDevice);
                     openIntent(MainActivity.class);
 //                    Toast.makeText(MainActivity.this,
 //                                    "Seja bem vindo: " + user.getName(), Toast.LENGTH_SHORT).show();

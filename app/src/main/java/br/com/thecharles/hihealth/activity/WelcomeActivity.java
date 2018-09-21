@@ -1,14 +1,10 @@
 package br.com.thecharles.hihealth.activity;
 
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,14 +21,15 @@ public class WelcomeActivity extends AppCompatActivity {
     public static final int RC_SIGN_IN = 123;
 
     // Firebase instance variables
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
+//    private FirebaseAuth mFirebaseAuth;
+//    private FirebaseAuth.AuthStateListener mAuthStateListener;
 //    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
     DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
 
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +40,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
         // Initialize Firebase components
-        mFirebaseAuth = FirebaseAuth.getInstance();
+//        mFirebaseAuth = FirebaseAuth.getInstance();
 
 
 
@@ -53,14 +50,24 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if ( currentUser != null ){
-            openIntent(MainActivity.class);
+
+//        Log.d(TAG, " - " + currentUser + " - "  + " - " +  firebaseUser.getEmail() + " - " + firebaseUser.getProviderId() );
+//
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if ( user != null ) {
+            if ( currentUser != null ){
+//            Log.d(TAG, " - " + currentUser + " - "  + " - " +  mFirebaseAuth.getCurrentUser().getEmail() + " - " + mFirebaseAuth.getCurrentUser().getProviderId() );
+                openIntent(MainActivity.class);
         }
+        }
+
     }
 
     private void openIntent(Class classOpen) {
         Intent intent = new Intent(WelcomeActivity.this, classOpen);
         startActivity(intent);
+        finish();
     }
 
 //    private View.OnClickListener onLogin() {
