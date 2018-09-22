@@ -2,6 +2,7 @@ package br.com.thecharles.hihealth.fragments;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
@@ -77,11 +78,16 @@ public class DataFragment extends Fragment{
                 mEnviar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getActivity(), "Alerta enviada com sucesso", Toast.LENGTH_SHORT).show();
+
 
                         /** TESTE REQUEST FMC */
 
-                       sendData();
+                        try {
+//                            sendData();
+                            sendNotification();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
 //                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
 //
@@ -122,6 +128,9 @@ public class DataFragment extends Fragment{
 //                            }
 //                        });
 
+                        dialog.dismiss();
+                        Toast.makeText(getActivity(), "Alerta enviada com sucesso", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
@@ -138,6 +147,58 @@ public class DataFragment extends Fragment{
 
         return  v;
     }
+
+/*    public class Connection extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+
+            OkHttpClient client;
+            client = new OkHttpClient();
+
+            String url = "https://fcm.googleapis.com/fcm/send";
+
+            Request.Builder builder = new Request.Builder()
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Authorization", "key=AIzaSyDhbrMURhxQJBqZOSRm-7kGfUckEEiNpXg");
+
+            builder.url(url);
+
+            MediaType mediaType =
+                    MediaType.parse("application/json; charset=utf-8");
+
+            RequestBody body = RequestBody.create(mediaType, strings);
+            builder.post(body);
+
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+
+            String jsonDeResposta = response.body().string();
+
+//            return jsonDeResposta;
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e(TAG, "error sending firebase app instance token to app server");
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    ResponseBody responseBody = response.body();
+                    if (!response.isSuccessful()) {
+                        throw new IOException
+                                ("Firebase app instance token to server status " + response);
+                    }
+
+                    Log.i(TAG, "Firebase app instance token has been sent to app server "
+                            +responseBody.string());
+                }
+            });
+
+            return null;
+        }
+    }*/
 
     private void requestPostFCM(String json) throws IOException{
 
@@ -160,9 +221,9 @@ public class DataFragment extends Fragment{
 
         Request request = builder.build();
 
-        Response response = client.newCall(request).execute();
+//        Response response = client.newCall(request).execute();
 
-        String jsonDeResposta = response.body().string();
+//        String jsonDeResposta = response.body().string();
 
 //            return jsonDeResposta;
         client.newCall(request).enqueue(new Callback() {
@@ -208,22 +269,52 @@ public class DataFragment extends Fragment{
         return msgObj.toString();
     }
 
+    private void sendNotification() throws IOException {
+        String notificationTitle = "SOS";
+        String notificationBody = "Caio está passando mal e precisa de sua ajuda !";
+
+        requestPostFCM(getFCMNotificationMessage(notificationTitle, notificationBody));
+    }
+
+    private Item getClientTokenAndData() {
+        Item item = new Item();
+        item.setToken("fP9UJcaP2u8:APA91bEyN4T1UVXtp36ahK1jHKcffvxsaciGy28ymcH5CaAFIx-Y850ayURbI2WnS8Sorz5dCFsz63Pqgjb0zHvLpvyMXY40398bC-jtcNw1S_CfvdHNYXTpeFt4zq2wXKOsUpxBcGSQ");
+        item.setName("HP Laptop");
+        item.setPrice("$1300");
+        item.setLocation("Bellevue");
+        return item;
+    }
+
+
     private String getFCMNotificationMessage(String title, String msg) {
         JsonObject jsonObj = new JsonObject();
         // client registration key is sent as token in the message to FCM server
-        jsonObj.addProperty("token", getClientToken());
+//        jsonObj.addProperty("to", getClientToken());
 
         JsonObject notification = new JsonObject();
         notification.addProperty("body", msg);
         notification.addProperty("title", title);
+
+//        JsonObject to = new JsonObject();
+
+
+//        jsonObj.add("to", to);
         jsonObj.add("notification", notification);
+        jsonObj.addProperty("to", getClientTokenDevice());
+//        jsonObj.add("to", to);
 
-        JsonObject message = new JsonObject();
-        message.add("message", jsonObj);
 
-        Log.d(TAG,"notification message " + message.toString());
+//        JsonObject message = new JsonObject();
+//        message.add("notication", notification);
+//        message.add(, "to", to);
 
-        return message.toString();
+        Log.d(TAG,"notification message " + jsonObj.toString());
+
+        return jsonObj.toString();
+    }
+
+    private String getClientTokenDevice() {
+        return "dlYeLaU0Sng:APA91bGREwNbjnJuCVnbcfu_f27GZJCqCMIeJJ2bA6EjP5nHfMltvCvUpkRKVz5pJW98iNdA9VhG53TFUmcLsDeMwiRkhT_FXUOsqN6Ibi7zjgm9L_2B34qQ1kpLqiIDnR5KVjuAr_jp";
     }
 
     private void sendData() throws IOException {
