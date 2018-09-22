@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -22,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import br.com.thecharles.hihealth.MyFirebaseInstanceIDService;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
+import br.com.thecharles.hihealth.model.Location;
 import br.com.thecharles.hihealth.model.Sensor;
 import br.com.thecharles.hihealth.model.User;
 
@@ -72,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
         };
     }
 
-    public void registerUserFirebase(final User user, final Sensor sensor) {
+    public void registerUserFirebase(final User user, final Sensor sensor, final Location location) {
 
         firebaseAuth = SettingsFirebase.getFirebaseAutenticacao();
         firebaseAuth.createUserWithEmailAndPassword(
@@ -91,6 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                         user.setId(userId);
                         user.save(userId);
                         sensor.save(userId);
+                        location.save(userId);
 
                         openApp();
 
@@ -161,7 +164,12 @@ public class RegisterActivity extends AppCompatActivity {
                     sensor.setHeartRateMin("0.0");
                     sensor.setStepCount("0");
 
-                    registerUserFirebase(user, sensor);
+
+                    Location location = new Location();
+                    LatLng latLng = new LatLng(-23.533773, -46.625290);
+                    location.setLatLng(latLng);
+
+                    registerUserFirebase(user, sensor, location);
 
 
                 }else {

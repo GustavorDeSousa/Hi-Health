@@ -59,6 +59,7 @@ public class WelcomeActivity extends AppCompatActivity {
             if ( currentUser != null ){
 //            Log.d(TAG, " - " + currentUser + " - "  + " - " +  mFirebaseAuth.getCurrentUser().getEmail() + " - " + mFirebaseAuth.getCurrentUser().getProviderId() );
                 openIntent(MainActivity.class);
+                finish();
         }
         }
 
@@ -67,7 +68,6 @@ public class WelcomeActivity extends AppCompatActivity {
     private void openIntent(Class classOpen) {
         Intent intent = new Intent(WelcomeActivity.this, classOpen);
         startActivity(intent);
-        finish();
     }
 
 //    private View.OnClickListener onLogin() {

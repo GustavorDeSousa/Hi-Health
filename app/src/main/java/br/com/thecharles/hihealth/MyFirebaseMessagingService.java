@@ -37,7 +37,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if(notification == null){
             title = "SOS";
-            body = data.get("itemName")+" "+data.get("itemPrice")+" "+data.get("location")
+            body = data.get("name").toUpperCase()+" "+data.get("message")
 //                    + " = " + data.get("userName")
             ;
         }else{

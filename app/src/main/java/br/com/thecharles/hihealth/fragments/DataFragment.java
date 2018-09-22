@@ -2,7 +2,6 @@ package br.com.thecharles.hihealth.fragments;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
@@ -19,11 +18,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.config.SettingsFirebase;
+import br.com.thecharles.hihealth.model.Location;
+import br.com.thecharles.hihealth.model.Notification;
+import br.com.thecharles.hihealth.model.User;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -33,13 +43,16 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-import static com.facebook.FacebookSdk.getClientToken;
-
 public class DataFragment extends Fragment{
 
     private static final String TAG = DataFragment.class.getSimpleName();
 
     private SwipeRefreshLayout refreshLayout;
+
+    private String tokenDevice;
+    private String userName;
+    //    private LatLng latLng;
+    Notification notification = new Notification();
 
     TextView countdownText;
 
@@ -48,6 +61,12 @@ public class DataFragment extends Fragment{
     boolean timeRunning;
 
 
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug").child("users");
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private ValueEventListener valueEventListenerNotication;
+    private String userID;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,6 +74,12 @@ public class DataFragment extends Fragment{
 
         refreshLayout = v.findViewById(R.id.swipe);
         refreshLayout.setOnRefreshListener(OnRefreshListener());
+
+//        DatabaseReference reference = firebaseRefDebug.child("users");
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        userID = user.getUid();
+
 
         FloatingActionButton fab = v.findViewById(R.id.fab_warning);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,13 +106,83 @@ public class DataFragment extends Fragment{
 
 
                         /** TESTE REQUEST FMC */
+//                        getDataFirebase();
+//                        new Connection().execute();
+                        DatabaseReference userRef = firebaseRefDebug.child(userID);
+                        valueEventListenerNotication =  userRef.addValueEventListener(new ValueEventListener() {
 
-                        try {
-                            sendData();
+
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User usuario = new User();
+                                Location location =  new Location();
+
+                                usuario.setName(dataSnapshot.child("registered").getValue(User.class).getName()); //set the name
+                                usuario.setToken(dataSnapshot.child("registered").getValue(User.class).getToken()); //set the name
+                                Float lat = dataSnapshot.child("location").child("latLng").child("latitude").getValue(Float.class);
+                                Float lng = dataSnapshot.child("location").child("latLng").child("longitude").getValue(Float.class);
+
+                                LatLng latLng = new LatLng(lat, lng);
+                                location.setLatLng(latLng);
+
+                                userName = usuario.getName();
+                                tokenDevice = usuario.getToken();
+                                latLng = location.getLatLng();
+
+//                                Log.d(TAG, userName + " - " + tokenDevice);
+
+//                Notification notification = new Notification();
+//                                LatLng latLng = new LatLng(-23.500712, -46.575707);
+                                notification.setTokenUser(tokenDevice);
+                                notification.setNameUser(userName);
+                                notification.setMessageAlert("não está bem, precisa de sua ajuda !");
+                                notification.setLatLngUser(latLng);
+
+
+                                JsonObject jsonObj = new JsonObject();
+                                jsonObj.addProperty("to", getClientTokenDevice());
+
+                                JsonObject notificationData = new JsonObject();
+                                notificationData.addProperty("name", notification.getNameUser());
+                                notificationData.addProperty("message", notification.getMessageAlert());
+                                notificationData.addProperty("latlng", notification.getLatLngUser().toString());
+
+                                jsonObj.add("data", notificationData);
+
+                                JsonObject msgObj = new JsonObject();
+                                msgObj.add("message", jsonObj);
+
+                                Log.d(TAG,"data  message " + jsonObj.toString());
+//
+                                String json = jsonObj.toString();
+//                return notification;
+
+                                try {
+
+                                    sendAlert(json);
+//                            sendData();
 //                            sendNotification();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+//                        try {
+//
+//                            sendAlert();
+////                            sendData();
+////                            sendNotification();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
 
 //                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
 //
@@ -131,8 +226,8 @@ public class DataFragment extends Fragment{
                         dialog.dismiss();
                         Toast.makeText(getActivity(), "Alerta enviada com Sucesso !", Toast.LENGTH_LONG).show();
 
-                        Snackbar.make(mView, "Mensagem enviada com Sucesso", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+//                        Snackbar.make(mView, "Mensagem enviada com Sucesso", Snackbar.LENGTH_LONG)
+//                                .setAction("Action", null).show();
                     }
                 });
 
@@ -149,57 +244,147 @@ public class DataFragment extends Fragment{
         return  v;
     }
 
-/*    public class Connection extends AsyncTask<String, Void, Void> {
+    private void sendAlert(String json) throws IOException {
+        requestPostFCM(json);
+//        getDataFirebase();
+//        Log.d(TAG,"Nome:"+ userName + " - " + "Token: " + tokenDevice);
+//        Toast.makeText(getActivity(), "Nome:"+ userName + " - " + "Token: " + tokenDevice, Toast.LENGTH_SHORT).show();
+    }
 
-        @Override
-        protected Void doInBackground(String... strings) {
+    private String getFCMAlert() {
+//
+//        notification = colocarDados(getDataFirebase());
+////
+        JsonObject jsonObj = new JsonObject();
+        jsonObj.addProperty("to", notification.getTokenUser());
 
-            OkHttpClient client;
-            client = new OkHttpClient();
+        JsonObject notificationData = new JsonObject();
+        notificationData.addProperty("name", notification.getNameUser());
+        notificationData.addProperty("message", notification.getMessageAlert());
+//        notificationData.addProperty("latlng", notification.getLatLngUser().toString());
 
-            String url = "https://fcm.googleapis.com/fcm/send";
+        jsonObj.add("data", notificationData);
 
-            Request.Builder builder = new Request.Builder()
-                    .addHeader("Content-Type", "application/json")
-                    .addHeader("Authorization", "key=AIzaSyDhbrMURhxQJBqZOSRm-7kGfUckEEiNpXg");
+        JsonObject msgObj = new JsonObject();
+        msgObj.add("message", jsonObj);
 
-            builder.url(url);
+        Log.d(TAG,"data  message " + jsonObj.toString());
+//
+        return jsonObj.toString();
 
-            MediaType mediaType =
-                    MediaType.parse("application/json; charset=utf-8");
+    }
 
-            RequestBody body = RequestBody.create(mediaType, strings);
-            builder.post(body);
 
-            Request request = builder.build();
 
-            Response response = client.newCall(request).execute();
+//    public Notification getDataFirebase() {
+//        DatabaseReference userRef = firebaseRefDebug.child(userID);
+////        final
+//        valueEventListenerNotication =  userRef.addValueEventListener(new ValueEventListener() {
+//
+//
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                User usuario = new User();
+//                usuario.setName(dataSnapshot.child("registered").getValue(User.class).getName()); //set the name
+//                usuario.setToken(dataSnapshot.child("registered").getValue(User.class).getToken()); //set the name
+//
+//                userName = usuario.getName();
+//                tokenDevice = usuario.getToken();
+//
+//                Log.d(TAG, userName + " - " + tokenDevice);
+//
+////                Notification notification = new Notification();
+////                LatLng latLng = new LatLng(-23.500712, -46.575707);
+//                notification.setTokenUser(userName);
+//                notification.setNameUser(tokenDevice);
+//                notification.setMessageAlert("Não está bem, precisa de sua ajuda !");
+//                notification.setLatLngUser(latLng);
+//
+//
+//
+////                return notification;
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+////        colocarDados(notification);
+//        return notification ;
+//
+//
+//    }
+//
+//    private Notification colocarDados(Notification notification) {
+////        getDataFirebase();
+////        notification = new Notification();
+////        LatLng latLng = new LatLng(-23.500712, -46.575707);
+////        notification.setTokenUser(tokenDevice);
+////        notification.setNameUser(userName);
+////        notification.setMessageAlert("Não está bem, precisa de sua ajuda !");
+////        notification.setLatLngUser(latLng);
+//
+//        return notification;
+//    }
+//
 
-            String jsonDeResposta = response.body().string();
 
-//            return jsonDeResposta;
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e(TAG, "error sending firebase app instance token to app server");
-                }
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    ResponseBody responseBody = response.body();
-                    if (!response.isSuccessful()) {
-                        throw new IOException
-                                ("Firebase app instance token to server status " + response);
-                    }
 
-                    Log.i(TAG, "Firebase app instance token has been sent to app server "
-                            +responseBody.string());
-                }
-            });
+//    public class Connection extends AsyncTask<Void, Void, Void> {
 
-            return null;
-        }
-    }*/
+//        @Override
+//        protected Void doInBackground(String... strings) {
+//
+//            OkHttpClient client;
+//            client = new OkHttpClient();
+//
+//            String url = "https://fcm.googleapis.com/fcm/send";
+//
+//            Request.Builder builder = new Request.Builder()
+//                    .addHeader("Content-Type", "application/json")
+//                    .addHeader("Authorization", "key=AIzaSyDhbrMURhxQJBqZOSRm-7kGfUckEEiNpXg");
+//
+//            builder.url(url);
+//
+//            MediaType mediaType =
+//                    MediaType.parse("application/json; charset=utf-8");
+//
+//            RequestBody body = RequestBody.create(mediaType, strings);
+//            builder.post(body);
+//
+//            Request request = builder.build();
+//
+//            Response response = client.newCall(request).execute();
+//
+//            String jsonDeResposta = response.body().string();
+//
+////            return jsonDeResposta;
+//            client.newCall(request).enqueue(new Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//                    Log.e(TAG, "error sending firebase app instance token to app server");
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    ResponseBody responseBody = response.body();
+//                    if (!response.isSuccessful()) {
+//                        throw new IOException
+//                                ("Firebase app instance token to server status " + response);
+//                    }
+//
+//                    Log.i(TAG, "Firebase app instance token has been sent to app server "
+//                            +responseBody.string());
+//                }
+//            });
+//
+//            return null;
+//        }
+
+
 
     private void requestPostFCM(String json) throws IOException{
 
