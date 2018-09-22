@@ -55,7 +55,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
 //        sendRegistrationToServer(refreshedToken);
 //
-//        registerToken(refreshedToken);
 
 
     }
@@ -66,16 +65,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         return getTokenDevice();
     }
 
-    private void registerToken(String refreshedToken) {
-        String idUserSender = UserFirebase.getUId();
-        DatabaseReference reference =
-                firebaseRefDebug.child("users").child(idUserSender);
-        User user = new User();
-        user.setToken(refreshedToken);
-
-        reference.child("registered").child("token").setValue(refreshedToken);
-
-    }
 
     /**
      * Persist token to third-party servers.

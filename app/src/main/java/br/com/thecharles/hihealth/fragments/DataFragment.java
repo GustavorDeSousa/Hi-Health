@@ -63,7 +63,7 @@ public class DataFragment extends Fragment{
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
 
                 //Pegando o dialog
-                View mView = getLayoutInflater().inflate(R.layout.dialog_alert, null);
+                final View mView = getLayoutInflater().inflate(R.layout.dialog_alert, null);
 
                 //Buttons do Dialog
                 Button mEnviar =  mView.findViewById(R.id.btnEnviar);
@@ -83,8 +83,8 @@ public class DataFragment extends Fragment{
                         /** TESTE REQUEST FMC */
 
                         try {
-//                            sendData();
-                            sendNotification();
+                            sendData();
+//                            sendNotification();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -129,8 +129,10 @@ public class DataFragment extends Fragment{
 //                        });
 
                         dialog.dismiss();
-                        Toast.makeText(getActivity(), "Alerta enviada com sucesso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Alerta enviada com Sucesso !", Toast.LENGTH_LONG).show();
 
+                        Snackbar.make(mView, "Mensagem enviada com Sucesso", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
                     }
                 });
 
@@ -140,8 +142,7 @@ public class DataFragment extends Fragment{
                         dialog.dismiss();
                     }
                 });
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
             }
         });
 
@@ -252,7 +253,7 @@ public class DataFragment extends Fragment{
         Item item = getClientTokenAndData();
 
         JsonObject jsonObj = new JsonObject();
-        jsonObj.addProperty("token", item.getToken());
+        jsonObj.addProperty("to", item.getToken());
 
         JsonObject itemInfo = new JsonObject();
         itemInfo.addProperty("itemName", item.getName());
@@ -261,12 +262,12 @@ public class DataFragment extends Fragment{
 
         jsonObj.add("data", itemInfo);
 
-        JsonObject msgObj = new JsonObject();
-        msgObj.add("message", jsonObj);
+//        JsonObject msgObj = new JsonObject();
+//        msgObj.add("message", jsonObj);
 
-        Log.d(TAG,"data  message " + msgObj.toString());
+        Log.d(TAG,"data  message " + jsonObj.toString());
 
-        return msgObj.toString();
+        return jsonObj.toString();
     }
 
     private void sendNotification() throws IOException {
@@ -278,10 +279,10 @@ public class DataFragment extends Fragment{
 
     private Item getClientTokenAndData() {
         Item item = new Item();
-        item.setToken("fP9UJcaP2u8:APA91bEyN4T1UVXtp36ahK1jHKcffvxsaciGy28ymcH5CaAFIx-Y850ayURbI2WnS8Sorz5dCFsz63Pqgjb0zHvLpvyMXY40398bC-jtcNw1S_CfvdHNYXTpeFt4zq2wXKOsUpxBcGSQ");
-        item.setName("HP Laptop");
-        item.setPrice("$1300");
-        item.setLocation("Bellevue");
+        item.setToken(getClientTokenDevice());
+        item.setName("SeuCaiOo, ");
+        item.setPrice("Não está bem, precisa de sua ajuda !");
+        item.setLocation("SP");
         return item;
     }
 

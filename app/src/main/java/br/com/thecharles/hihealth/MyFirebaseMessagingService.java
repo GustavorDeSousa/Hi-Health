@@ -1,7 +1,9 @@
 package br.com.thecharles.hihealth;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -9,6 +11,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
+
+import br.com.thecharles.hihealth.activity.MapsActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -32,7 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String body;
 
         if(notification == null){
-            title = "New Item Details";
+            title = "SOS";
             body = data.get("itemName")+" "+data.get("itemPrice")+" "+data.get("location")
 //                    + " = " + data.get("userName")
             ;
@@ -42,10 +46,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
 
-//        Intent intent = new Intent(this,  DeviceSepecificMessageFCMActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-//                PendingIntent.FLAG_ONE_SHOT);
+        Intent intent = new Intent(this,  MapsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, "fcm-instance-specific")
@@ -53,7 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setContentTitle(title)
                         .setContentText(body)
                         .setAutoCancel(true)
-//                        .setContentIntent(pendingIntent)
+                        .setContentIntent(pendingIntent)
                 ;
 
         NotificationManager notificationManager =
