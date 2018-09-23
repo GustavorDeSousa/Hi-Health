@@ -2,6 +2,7 @@ package br.com.thecharles.hihealth.fragments;
 
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +25,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.activity.MapsActivity;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
+import br.com.thecharles.hihealth.model.Location;
 import br.com.thecharles.hihealth.model.User;
 
 public class ProfileFragment extends Fragment {
@@ -78,6 +82,29 @@ public class ProfileFragment extends Fragment {
 //                        + usuario.getAddress() + "\n" + usuario.getGenre() + "\n" + usuario.getBirthDay() + "\n"
 //                        + usuario.getBlood() + "\n" + "...";
 //                tvProfile.setText(profile);
+
+                Location location = new Location();
+                Double lat = dataSnapshot.child(userID).child("location").child("latLng").child("latitude").getValue(Double.class);
+                Double lng = dataSnapshot.child(userID).child("location").child("latLng").child("longitude").getValue(Double.class);
+
+                LatLng latLng = new LatLng(lat, lng);
+                location.setLatLng(latLng);
+
+                Intent intent = new Intent(getActivity(),  MapsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putDouble("myLat", lat);
+                bundle.putDouble("myLng", lng);
+                intent.putExtras(bundle);
+
+                Log.d(TAG, "showData: Lat: " + lat);
+                Log.d(TAG, "showData: Lgn: " + lng);
+                Log.d(TAG, "showData: latLng: " + latLng);
+
+
+
+//                myLocation = location.getLatLng();
+//                myLatitude = lat;
+//                myLongitude = lng;
 
                 tvName.setText(usuario.getName());
                 tvAddress.setText(usuario.getAddress());

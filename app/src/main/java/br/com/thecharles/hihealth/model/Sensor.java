@@ -2,9 +2,11 @@ package br.com.thecharles.hihealth.model;
 
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.Serializable;
+
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 
-public class Sensor {
+public class Sensor implements Serializable {
 
     private String heartRate;
     private String heartRateMax;

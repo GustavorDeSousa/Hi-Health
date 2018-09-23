@@ -135,17 +135,20 @@ public class DataFragment extends Fragment{
 //                                LatLng latLng = new LatLng(-23.500712, -46.575707);
                                 notification.setTokenUser(tokenDevice);
                                 notification.setNameUser(userName);
-                                notification.setMessageAlert("não está bem, precisa de sua ajuda !");
+                                notification.setMessageAlert(" pode não estar passando bem. Que tal ajudar?!");
                                 notification.setLatLngUser(latLng);
+                                notification.setIdUser(userID);
 
 
                                 JsonObject jsonObj = new JsonObject();
                                 jsonObj.addProperty("to", getClientTokenDevice());
 
                                 JsonObject notificationData = new JsonObject();
+                                notificationData.addProperty("id", notification.getIdUser());
                                 notificationData.addProperty("name", notification.getNameUser());
                                 notificationData.addProperty("message", notification.getMessageAlert());
                                 notificationData.addProperty("latlng", notification.getLatLngUser().toString());
+
 
                                 jsonObj.add("data", notificationData);
 
@@ -500,6 +503,10 @@ public class DataFragment extends Fragment{
     }
 
     private String getClientTokenDevice() {
+
+//            firebaseRefDebug.addValueEventListener(valueEventListenerNotication);
+
+
         return "dlYeLaU0Sng:APA91bGREwNbjnJuCVnbcfu_f27GZJCqCMIeJJ2bA6EjP5nHfMltvCvUpkRKVz5pJW98iNdA9VhG53TFUmcLsDeMwiRkhT_FXUOsqN6Ibi7zjgm9L_2B34qQ1kpLqiIDnR5KVjuAr_jp";
     }
 

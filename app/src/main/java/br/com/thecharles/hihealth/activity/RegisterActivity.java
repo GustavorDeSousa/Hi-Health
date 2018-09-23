@@ -158,6 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
                     user.setWeight(weight);
                     user.setToken(token);
 
+
                     Sensor sensor = new Sensor();
                     sensor.setHeartRate("0.0");
                     sensor.setHeartRateMax("0.0");

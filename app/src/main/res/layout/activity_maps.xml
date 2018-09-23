@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.ChatActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -19,17 +20,17 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/ivPhotoChat"
+                android:id="@+id/ivPhotoAlert"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/com_facebook_profile_picture_blank_square"
                 android:layout_marginRight="16dp"/>
 
             <TextView
-                android:id="@+id/tvNameChat"
+                android:id="@+id/tvUserAlert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Caio Pimentel"
+                android:text="Sem Nome"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:textColor="#fff"/>
@@ -47,7 +48,7 @@
 
 
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
 
 
 

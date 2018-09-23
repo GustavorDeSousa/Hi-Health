@@ -1,11 +1,14 @@
 package br.com.thecharles.hihealth.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +29,17 @@ import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.result.DailyTotalResult;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +49,7 @@ import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.fragments.ContactsFragment;
 import br.com.thecharles.hihealth.fragments.DataFragment;
 import br.com.thecharles.hihealth.fragments.ProfileFragment;
+import br.com.thecharles.hihealth.model.Location;
 import br.com.thecharles.hihealth.model.Sensor;
 
 // TODO Corrigir bug de ciclo de vida
@@ -45,18 +58,22 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
 
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
+    private String userID;
     DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
     DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private ValueEventListener valueEventListenerMaps;
 
     private String heartRate = "0.0";
     private String heartRateMax = "0.0";
     private String heartRateMin = "0.0";
     private String stepsCount = "0";
+
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -96,6 +113,12 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setTitle(R.string.title_data);
         openFragment(dataFragment);
 
+        DatabaseReference reference = firebaseRefDebug.child("users");
+
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        userID = user.getUid();
+
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Fitness.HISTORY_API)
@@ -107,16 +130,14 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
 
 
-
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        dataFitness();
-        Toast.makeText(this, "Chamando os Dados do Sensor !",
-                Toast.LENGTH_SHORT).show();
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        dataFitness();
     }
 
     private void dataFitness() {

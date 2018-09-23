@@ -2,14 +2,16 @@ package br.com.thecharles.hihealth.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class Notification {
+import java.io.Serializable;
+
+public class Notification implements Serializable{
 
     private String tokenUser;
 
     private LatLng latLngUser;
     private String nameUser;
     private String messageAlert;
-
+    private String idUser;
 
     public Notification() {
     }
@@ -29,6 +31,15 @@ public class Notification {
 
     public Notification setLatLngUser(LatLng latLngUser) {
         this.latLngUser = latLngUser;
+        return this;
+    }
+
+    public String getIdUser() {
+        return idUser;
+    }
+
+    public Notification setIdUser(String idUser) {
+        this.idUser = idUser;
         return this;
     }
 
