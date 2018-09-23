@@ -8,7 +8,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -76,11 +78,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, "fcm-instance-specific")
                         .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
+                        .setTicker(title)
                         .setContentTitle(title)
                         .setContentText(body)
 //                        .setBadgeIconType(R.drawable.ic_favorite_black_24dp)
 //                        .setVibrate()
-                        .setAutoCancel(true)
+//                        .setAutoCancel(true)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+//                        .setLargeIcon(BitmapFactory.decodeResource(R.drawable.ic_account_circle_black_24dp))
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(body))
                         .setContentIntent(pendingIntent)
