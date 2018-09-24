@@ -129,14 +129,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), it,0);
 
         Intent it = new Intent(this,  MapsActivity.class);
-//        getReplyMessage(it);
-//        Bundle bundle = new Bundle();
-        it.putExtra("idUser", data.get("id"));
-        it.putExtra("nameUser", data.get("name"));
-        it.putExtra("latlngUser", data.get("latlng"));
-//        it.putExtras(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putString("idUser", data.get("id"));
+        bundle.putString("nameUser", data.get("name"));
+        bundle.putString("latlngUser", data.get("latlng"));
+        it.putExtras(bundle);
         it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, it, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -223,43 +222,43 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                R.drawable.ic_account_circle_black_24dp, "Mute", mu));
 
 
-
-
-        String replyLabel = "Enter your reply here";
-
-        //Initialise RemoteInput
-        RemoteInput remoteInput = new RemoteInput.Builder(KEY_REPLY)
-                .setLabel(replyLabel)
-                .build();
-
-
-        int randomRequestCode = new Random().nextInt(54325);
-
-        //PendingIntent that restarts the current activity instance.
-        Intent resultIntent = new Intent(this, MapsActivity.class);
-        resultIntent.putExtra("idUser", data.get("id"));
-        resultIntent.putExtra("nameUser", data.get("name"));
-        resultIntent.putExtra("latlngUser", data.get("latlng"));
-        resultIntent.putExtra("message", KEY_REPLY);
-        resultIntent.putExtra("notificationId", 3);
-        //Set a unique request code for this pending intent
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(
-                this, randomRequestCode, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        //Notification Action with RemoteInput instance added.
-        NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
-                android.R.drawable.sym_action_chat, "REPLY", resultPendingIntent)
-                .addRemoteInput(remoteInput)
-                .setAllowGeneratedReplies(true)
-                .build();
+//
+//
+//        String replyLabel = "Enter your reply here";
+//
+//        //Initialise RemoteInput
+//        RemoteInput remoteInput = new RemoteInput.Builder(KEY_REPLY)
+//                .setLabel(replyLabel)
+//                .build();
+//
+//
+//        int randomRequestCode = new Random().nextInt(54325);
+//
+//        //PendingIntent that restarts the current activity instance.
+//        Intent resultIntent = new Intent(this, MapsActivity.class);
+//        resultIntent.putExtra("idUser", data.get("id"));
+//        resultIntent.putExtra("nameUser", data.get("name"));
+//        resultIntent.putExtra("latlngUser", data.get("latlng"));
+//        resultIntent.putExtra("message", KEY_REPLY);
+//        resultIntent.putExtra("notificationId", 3);
+//        //Set a unique request code for this pending intent
+//        PendingIntent resultPendingIntent = PendingIntent.getActivity(
+//                this, randomRequestCode, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//
+//        //Notification Action with RemoteInput instance added.
+//        NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
+//                android.R.drawable.sym_action_chat, "REPLY", resultPendingIntent)
+//                .addRemoteInput(remoteInput)
+//                .setAllowGeneratedReplies(true)
+//                .build();
 
 
 
 
 
         //Notification.Action instance added to Notification Builder.
-        notificationBuilder.addAction(replyAction);
+//        notificationBuilder.addAction(replyAction);
 
 //        Intent intent = new Intent(this, MapsActivity.class);
 //        intent.putExtra("notificationId", NOTIFICATION_ID);
@@ -278,13 +277,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        notificationManager.notify(NOTIFICATION_ID,
 //                builder.build());
 
-        Intent intent = new Intent(this, MyFirebaseMessagingService.class);
-        intent.putExtra("notificationId", NOTIFICATION_ID);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent dismissIntent = PendingIntent.getActivity(getBaseContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-
-        notificationBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "DISMISS", dismissIntent);
+//        Intent intent = new Intent(this, MyFirebaseMessagingService.class);
+//        intent.putExtra("notificationId", NOTIFICATION_ID);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        PendingIntent dismissIntent = PendingIntent.getActivity(getBaseContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+//
+//
+//        notificationBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "DISMISS", dismissIntent);
 
 
 //        Intent intentDismiss = new Intent(this, ChatActivity.class);
@@ -315,44 +314,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(2, alert);
 
 
-    }
-/*
-*/
-
-
-
-    private void processInlineReply(Intent intent) {
-        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
-
-        idUserSender = firebaseAuth.getCurrentUser().getUid();
-        if (remoteInput != null) {
-            String reply = remoteInput.getCharSequence(
-                    KEY_REPLY).toString();
-
-            //Set the inline reply text in the TextView
-//            txtReplied.setText("Reply is "+reply);
-            Log.d(TAG, "Reply is "+reply);
-
-            //Update the notification to show that the reply was received.
-
-            messageRef.child(idUserSender)
-                    .child(idUserSender)
-                    .push()
-                    .setValue(reply);
-
-//            NotificationCompat.Builder repliedNotification =
-//                    new NotificationCompat.Builder(this)
-//                            .setSmallIcon(
-//                                    android.R.drawable.stat_notify_chat)
-//                            .setContentText("Inline Reply received");
-//
-//            NotificationManager notificationManager =
-//                    (NotificationManager)
-//                            getSystemService(Context.NOTIFICATION_SERVICE);
-//            notificationManager.notify(NOTIFICATION_ID,
-//                    repliedNotification.build());
-
-        }
     }
 
 

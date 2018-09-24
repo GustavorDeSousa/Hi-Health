@@ -177,36 +177,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             id = bundle.getString("idUser");
 
 
-            String reply = bundle.getString("message", null);
+//            String reply = bundle.getString("message", null);
 
 
 
 
 
             if (id != null) {
+//
+//                Bundle remoteInput = RemoteInput.getResultsFromIntent(getIntent());
+////        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
+//                CharSequence msg = remoteInput.getCharSequence(reply);
+//
+//                String strMsg = msg.toString();
 
-                Bundle remoteInput = RemoteInput.getResultsFromIntent(getIntent());
-//        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
-                CharSequence msg = remoteInput.getCharSequence(reply);
 
-                String strMsg = msg.toString();
-
-
-                if (remoteInput == null) {
-
-                    alertLocation = bundle.getString("latlngUser");
-
-                    alertLocation = alertLocation.replace("lat/lng: ","");
-                    alertLocation = alertLocation.replace("(","");
-                    alertLocation = alertLocation.replace(")","");
-
-                    String[] lotacionConvert = alertLocation.split(",");
-                    alertLatitude = Float.parseFloat(lotacionConvert[0]);
-                    alertLongitude = Float.parseFloat(lotacionConvert[1]);
-                    name = bundle.getString("nameUser");
-                    tvUserAlert.setText(name);
-
-                }
 
                 alertLocation = bundle.getString("latlngUser");
 
@@ -220,26 +205,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 name = bundle.getString("nameUser");
                 tvUserAlert.setText(name);
 
-                idUserReceiver = id;
-                Message message = new Message();
-                message.setIdSender(idUserSender);
-                message.setMessage(strMsg);
+//                idUserReceiver = id;
+//                Message message = new Message();
+//                message.setIdSender(idUserSender);
+//                message.setMessage(strMsg);
 
-                //TODO Salvar menssagem para o remetente
-                saveMessage(idUserSender,idUserReceiver, message);
-                //TODO Salvar menssagem para o destinatário
-                saveMessage(idUserReceiver,idUserSender, message);
-
-                NotificationCompat.Builder notificationBuilder =
-                        new NotificationCompat.Builder(this, "fcm-instance-specific")
-                                .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
-                                .setContentText("Menssagem Enviada!");
-
-                NotificationManager notificationManager =
-                        (NotificationManager)
-                                getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(2,
-                        notificationBuilder.build());
+//                //TODO Salvar menssagem para o remetente
+//                saveMessage(idUserSender,idUserReceiver, message);
+//                //TODO Salvar menssagem para o destinatário
+//                saveMessage(idUserReceiver,idUserSender, message);
+//
+//                NotificationCompat.Builder notificationBuilder =
+//                        new NotificationCompat.Builder(this, "fcm-instance-specific")
+//                                .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
+//                                .setContentText("Menssagem Enviada!");
+//
+//                NotificationManager notificationManager =
+//                        (NotificationManager)
+//                                getSystemService(Context.NOTIFICATION_SERVICE);
+//                notificationManager.notify(2,
+//                        notificationBuilder.build());
 
             } else {//
 
