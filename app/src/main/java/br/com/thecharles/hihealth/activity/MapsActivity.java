@@ -1,9 +1,15 @@
 package br.com.thecharles.hihealth.activity;
 
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,9 +30,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import br.com.thecharles.hihealth.MyFirebaseMessagingService;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.helper.UserFirebase;
+import br.com.thecharles.hihealth.model.Message;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -37,9 +45,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageView ivUserAlert;
 
     DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
-    DatabaseReference firebaseRefDebug = firebaseRef.child("debug").child("users");
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
+    DatabaseReference userRef = firebaseRefDebug.child("users");
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private String userID;
+
+
+//    DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
+//    DatabaseReference messageRef = firebaseRef.child("debug").child("messages");
+    private String idUserSender;
+    private String idUserReceiver;
 
 
     String name;
@@ -55,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
         userID = user.getUid();
-        firebaseRefDebug = firebaseRefDebug.child(userID);
+        userRef = firebaseRefDebug.child(userID);
 
 
 
@@ -144,11 +159,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double myLongitude = 0.0;
         double alertLongitude = 0.0;
 
+//        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
+//        CharSequence message = MyFirebaseMessagingService.getReplyMessage(it);
+        idUserSender = firebaseAuth.getCurrentUser().getUid();
+
+
+        //Set the inline reply text in the TextView
+//            txtReplied.setText("Reply is "+reply);
+//        Log.d(TAG, "Reply is " + message);
+
+        //Update the notification to show that the reply was received.
+
+
+
         if (bundle != null) {
 
             id = bundle.getString("idUser");
 
+
+            String reply = bundle.getString("message", null);
+
+
+
+
+
             if (id != null) {
+
+                Bundle remoteInput = RemoteInput.getResultsFromIntent(getIntent());
+//        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
+                CharSequence msg = remoteInput.getCharSequence(reply);
+
+                String strMsg = msg.toString();
+
+
+                if (remoteInput == null) {
+
+                    alertLocation = bundle.getString("latlngUser");
+
+                    alertLocation = alertLocation.replace("lat/lng: ","");
+                    alertLocation = alertLocation.replace("(","");
+                    alertLocation = alertLocation.replace(")","");
+
+                    String[] lotacionConvert = alertLocation.split(",");
+                    alertLatitude = Float.parseFloat(lotacionConvert[0]);
+                    alertLongitude = Float.parseFloat(lotacionConvert[1]);
+                    name = bundle.getString("nameUser");
+                    tvUserAlert.setText(name);
+
+                }
 
                 alertLocation = bundle.getString("latlngUser");
 
@@ -162,6 +220,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 name = bundle.getString("nameUser");
                 tvUserAlert.setText(name);
 
+                idUserReceiver = id;
+                Message message = new Message();
+                message.setIdSender(idUserSender);
+                message.setMessage(strMsg);
+
+                //TODO Salvar menssagem para o remetente
+                saveMessage(idUserSender,idUserReceiver, message);
+                //TODO Salvar menssagem para o destinatário
+                saveMessage(idUserReceiver,idUserSender, message);
+
+                NotificationCompat.Builder notificationBuilder =
+                        new NotificationCompat.Builder(this, "fcm-instance-specific")
+                                .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
+                                .setContentText("Menssagem Enviada!");
+
+                NotificationManager notificationManager =
+                        (NotificationManager)
+                                getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(2,
+                        notificationBuilder.build());
+
             } else {//
 
 //                myLatitude = bundle.getDouble("lat");
@@ -171,6 +250,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         }
+
+
 
 
         final Double[] myLat = {myLatitude};
@@ -228,4 +309,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        Log.d(TAG, "Mapa: "+ myHouse);
 
     }
+
+    private void saveMessage(String idSender, String idReceiver, Message msg) {
+        DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
+        DatabaseReference firebaseRefDebug = database.child("debug");
+        DatabaseReference messageRef = firebaseRefDebug.child("messages");
+
+        messageRef.child(idSender)
+                .child(idReceiver)
+                .push()
+                .setValue(msg);
+
+
+    }
+
 }
