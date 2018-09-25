@@ -227,7 +227,7 @@ public class DataFragment extends Fragment{
 //                        });
 
                         dialog.dismiss();
-                        Toast.makeText(getActivity(), "Alerta enviada com Sucesso !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Alerta enviado com Sucesso !", Toast.LENGTH_LONG).show();
 
 //                        Snackbar.make(mView, "Mensagem enviada com Sucesso", Snackbar.LENGTH_LONG)
 //                                .setAction("Action", null).show();
@@ -507,7 +507,9 @@ public class DataFragment extends Fragment{
 //            firebaseRefDebug.addValueEventListener(valueEventListenerNotication);
 
 
-        return "dlYeLaU0Sng:APA91bGREwNbjnJuCVnbcfu_f27GZJCqCMIeJJ2bA6EjP5nHfMltvCvUpkRKVz5pJW98iNdA9VhG53TFUmcLsDeMwiRkhT_FXUOsqN6Ibi7zjgm9L_2B34qQ1kpLqiIDnR5KVjuAr_jp";
+        //https://iid.googleapis.com/notification?notification_key_name=Hi-Health1
+        return "APA91bETZ4mQB36PSj6w7QQFIE6vJm8YXtrwM4FBBWyR3kdTe_nyT4qoZimj0SYGQm4KWXhsT4nYRM6iBQHIcvEzCR4GxTzbMU-H27RAprF_CX-T7K3Ngx0";
+//        return "APA91bH1EsOjP_6VN_khTaDF1YDhWv88LwRF8-hUKCKZSqwkylnyekW36qoLsgAhs2QVN98sS-Oqxy7lYbeYd5cEISDw_UKd3Edw_NxWIIHVbglDsEhiI-E";
     }
 
     private void sendData() throws IOException {

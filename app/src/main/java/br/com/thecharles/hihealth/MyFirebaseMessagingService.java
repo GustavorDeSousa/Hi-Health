@@ -113,7 +113,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String body;
 
         if(notification == null){
-            title = "SOS";
+            title = "Hi-Health";
             body = data.get("name")+ data.get("message")
 //                    + " = " + data.get("userName")
             ;
@@ -151,6 +151,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.view_collapsed_notification);
         collapsedView.setTextViewText(R.id.timestamp, DateUtils.formatDateTime(this, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME));
         collapsedView.setTextViewText(R.id.content_text, data.get("name") + data.get("message"));
+
 
 
         NotificationCompat.Builder notificationBuilder =
@@ -303,10 +304,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Notification alert = notificationBuilder.build();
         alert.flags =
                 //Noticaçao permanente
-                Notification.FLAG_ONGOING_EVENT |
+//                Notification.FLAG_ONGOING_EVENT |
                 Notification.FLAG_SHOW_LIGHTS
         //Vibrar até olhar a mensagem
-//                        | Notification.FLAG_INSISTENT
+                        | Notification.FLAG_INSISTENT
         ;
 
 //        processInlineReply(resultIntent);

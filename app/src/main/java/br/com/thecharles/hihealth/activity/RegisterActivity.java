@@ -84,10 +84,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
 
-                    Toast.makeText(RegisterActivity.this, "Usuário cadastrado com Sucesso",
-                            Toast.LENGTH_SHORT).show();
-                    finish();
-
                     try {
                         String userId = firebaseAuth.getCurrentUser().getUid();
                         user.setId(userId);
@@ -96,6 +92,10 @@ public class RegisterActivity extends AppCompatActivity {
                         location.save(userId);
 
                         openApp();
+
+                        Toast.makeText(RegisterActivity.this, "Usuário cadastrado com Sucesso",
+                                Toast.LENGTH_SHORT).show();
+                        finish();
 
                     } catch (Exception e ) {
                         e.printStackTrace();
@@ -145,7 +145,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                     MyFirebaseInstanceIDService myFirebaseInstanceIDService = new MyFirebaseInstanceIDService();
                     String token = myFirebaseInstanceIDService.getToken();
-                    Toast.makeText(RegisterActivity.this, "", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Token gerado: " + token);
+//                    Toast.makeText(RegisterActivity.this, "", Toast.LENGTH_SHORT).show();
 
                     User user = new User();
 //        user.setId(firebaseAuth.getCurrentUser().getUid());
@@ -245,7 +246,6 @@ public class RegisterActivity extends AppCompatActivity {
         Intent intent = new Intent(
                 RegisterActivity.this, MainActivity.class);
         startActivity(intent);
-        finish();
         //Verifica usuario logado
         if (firebaseAuth.getCurrentUser() != null) {
             Log.i("CurrentUser", "Usuario logado !");

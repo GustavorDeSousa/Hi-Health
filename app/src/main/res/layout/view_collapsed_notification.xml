@@ -43,7 +43,7 @@
             android:id="@+id/content_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Alerta"
+            android:text="Hi-Health"
             android:textAllCaps="true"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"/>
 
