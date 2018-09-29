@@ -26,7 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 
 import br.com.thecharles.hihealth.activity.MapsActivity;
 import br.com.thecharles.hihealth.R;
-import br.com.thecharles.hihealth.activity.WalkMyAndroidActivity;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 
 public class ChildDFragment extends Fragment {
@@ -69,16 +68,16 @@ public class ChildDFragment extends Fragment {
 
         return view;
     }
-
-    private View.OnClickListener openWalkMyAndroid() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), WalkMyAndroidActivity.class);
-                startActivity(intent);
-            }
-        };
-    }
+//
+//    private View.OnClickListener openWalkMyAndroid() {
+//        return new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), WalkMyAndroidActivity.class);
+//                startActivity(intent);
+//            }
+//        };
+//    }
 
         private View.OnClickListener openMap() {
         return new View.OnClickListener() {

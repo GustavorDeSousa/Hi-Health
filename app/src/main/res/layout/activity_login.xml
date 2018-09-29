@@ -29,7 +29,7 @@
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="@string/email"
             android:inputType="text"
             android:maxLines="1"
             android:singleLine="true" />
@@ -38,7 +38,7 @@
             android:id="@+id/edtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Senha"
+            android:hint="@string/senha"
             android:inputType="textPassword"
             android:maxLines="1"
             android:singleLine="true" />
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/btn_rose"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="#FFF"
             android:textStyle="bold"
             />

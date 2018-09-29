@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:text="Adicionar Contato"
+        android:text="@string/title_add_contato"
         android:textSize="25dp"
         android:textStyle="bold" />
 

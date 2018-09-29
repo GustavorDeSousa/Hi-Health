@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Chatbot"
+        android:text="@string/chatbot"
         android:textSize="25sp"
         android:textStyle="bold"
         android:textColor="#FFF"

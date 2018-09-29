@@ -9,7 +9,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Passos"
+            android:text="@string/passos"
             android:textSize="25sp"
             android:textStyle="bold"
             android:textColor="#FFF"
@@ -44,7 +44,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:maxLength="5"
-                android:text="10000"/>
+                android:text="0"/>
 
         </LinearLayout>
 

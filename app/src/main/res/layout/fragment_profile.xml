@@ -47,7 +47,7 @@
         android:textColor="#fff"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:text="Editar Perfil"
+        android:text="@string/editar_perfil"
         android:layout_below="@+id/imgPerfil"/>
 
     <TextView
@@ -62,7 +62,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Amigos"
+        android:text="@string/amigos"
         android:layout_marginLeft="20dp"
         android:layout_below="@+id/txEndereco"
         android:layout_toRightOf="@+id/txTotalAmigos"/>
@@ -71,7 +71,7 @@
         android:id="@+id/txTitleSangue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TIPO SANGUINEO"
+        android:text="@string/tipo_sanguineo"
         android:textStyle="bold"
         android:textSize="16dp"
         android:layout_marginTop="5dp"
@@ -91,7 +91,7 @@
         android:id="@+id/txTitleAltura"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text= "Altura"
+        android:text= "@string/altura"
         android:textStyle="bold"
         android:textSize="16dp"
         android:layout_marginTop="5dp"
@@ -112,7 +112,7 @@
         android:id="@+id/txTitlePeso"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PESO"
+        android:text="@string/peso"
         android:textStyle="bold"
         android:textSize="16dp"
         android:layout_marginTop="5dp"
@@ -132,7 +132,7 @@
         android:id="@+id/txTitleHistorico"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Historico de Doença"
+        android:text="@string/historico_doenca"
         android:textStyle="bold"
         android:textSize="16dp"
         android:layout_marginTop="5dp"
