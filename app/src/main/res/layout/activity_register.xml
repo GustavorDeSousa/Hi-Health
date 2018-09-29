@@ -24,7 +24,6 @@
                 android:layout_height="wrap_content"
                 android:hint="E-mail"
                 android:inputType="text"
-                android:text="testecaio1@email.com"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -33,7 +32,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Senha"
-                android:text="caio1234"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -43,7 +41,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nome"
-                android:text="Caio 1"
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -54,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:hint="Celular"
                 android:inputType="number"
-                android:text="11912341234"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -74,7 +70,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sexo:"
+                    android:text="Gênero:"
                     android:textStyle="bold"
                     android:layout_marginRight="20dp"/>
 
@@ -106,8 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Endereço Completo"
-                android:inputType="text"
-                android:text="Rua Yamato, 377"/>
+                android:inputType="text"/>
 
             <EditText
                 android:id="@+id/edtHeight"
@@ -115,7 +110,6 @@
                 android:layout_height="wrap_content"
                 android:hint="Altura"
                 android:inputType="numberDecimal"
-                android:text="171"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -125,7 +119,6 @@
                 android:layout_height="wrap_content"
                 android:hint="Peso"
                 android:inputType="numberDecimal"
-                android:text="85"
                 android:maxLines="1"
                 android:singleLine="true" />
 
