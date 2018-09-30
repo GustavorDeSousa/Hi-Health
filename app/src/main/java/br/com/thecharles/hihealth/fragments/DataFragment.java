@@ -2,10 +2,10 @@ package br.com.thecharles.hihealth.fragments;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,22 +18,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
+import br.com.thecharles.hihealth.NotificationFCM;
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.ServiceShakeNotification;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
-import br.com.thecharles.hihealth.model.Location;
 import br.com.thecharles.hihealth.model.Notification;
-import br.com.thecharles.hihealth.model.User;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -66,6 +63,10 @@ public class DataFragment extends Fragment{
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private ValueEventListener valueEventListenerNotication;
     private String userID;
+
+    private SensorManager mSensorManager;
+
+    private ServiceShakeNotification mSensorListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,76 +107,99 @@ public class DataFragment extends Fragment{
 
 
                         /** TESTE REQUEST FMC */
-//                        getDataFirebase();
-//                        new Connection().execute();
-                        DatabaseReference userRef = firebaseRefDebug.child(userID);
-                        valueEventListenerNotication =  userRef.addValueEventListener(new ValueEventListener() {
+                        NotificationFCM alert = new NotificationFCM();
+                        alert.getDataNotification();
 
 
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                User usuario = new User();
-                                Location location =  new Location();
-
-                                usuario.setName(dataSnapshot.child("registered").getValue(User.class).getName()); //set the name
-                                usuario.setToken(dataSnapshot.child("registered").getValue(User.class).getToken()); //set the name
-                                Float lat = dataSnapshot.child("location").child("latLng").child("latitude").getValue(Float.class);
-                                Float lng = dataSnapshot.child("location").child("latLng").child("longitude").getValue(Float.class);
-
-                                LatLng latLng = new LatLng(lat, lng);
-                                location.setLatLng(latLng);
-
-                                userName = usuario.getName();
-                                tokenDevice = usuario.getToken();
-                                latLng = location.getLatLng();
-
-//                                Log.d(TAG, userName + " - " + tokenDevice);
-
-//                Notification notification = new Notification();
-//                                LatLng latLng = new LatLng(-23.500712, -46.575707);
-                                notification.setTokenUser(tokenDevice);
-                                notification.setNameUser(userName);
-                                notification.setMessageAlert(" pode não estar passando bem. Que tal ajudar?!");
-                                notification.setLatLngUser(latLng);
-                                notification.setIdUser(userID);
-
-
-                                JsonObject jsonObj = new JsonObject();
-                                jsonObj.addProperty("to", getClientTokenDevice());
-
-                                JsonObject notificationData = new JsonObject();
-                                notificationData.addProperty("id", notification.getIdUser());
-                                notificationData.addProperty("name", notification.getNameUser());
-                                notificationData.addProperty("message", notification.getMessageAlert());
-                                notificationData.addProperty("latlng", notification.getLatLngUser().toString());
-
-
-                                jsonObj.add("data", notificationData);
-
-                                JsonObject msgObj = new JsonObject();
-                                msgObj.add("message", jsonObj);
-
-                                Log.d(TAG,"data  message " + jsonObj.toString());
+////                        getDataFirebase();
+////                        new Connection().execute();
+//                        DatabaseReference userRef = firebaseRefDebug.child(userID);
+//                        valueEventListenerNotication =  userRef.addValueEventListener(new ValueEventListener() {
 //
-                                String json = jsonObj.toString();
-//                return notification;
-
-                                try {
-
-                                    sendAlert(json);
-//                            sendData();
-//                            sendNotification();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+//
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                User usuario = new User();
+//                                Location location =  new Location();
+//
+//                                usuario.setName(dataSnapshot.child("registered").getValue(User.class).getName()); //set the name
+//                                usuario.setToken(dataSnapshot.child("registered").getValue(User.class).getToken()); //set the name
+//                                Float lat = dataSnapshot.child("location").child("latLng").child("latitude").getValue(Float.class);
+//                                Float lng = dataSnapshot.child("location").child("latLng").child("longitude").getValue(Float.class);
+//
+//                                LatLng latLng = new LatLng(lat, lng);
+//                                location.setLatLng(latLng);
+//
+//                                userName = usuario.getName();
+//                                tokenDevice = usuario.getToken();
+//                                latLng = location.getLatLng();
+//
+////                                Log.d(TAG, userName + " - " + tokenDevice);
+//
+////                Notification notification = new Notification();
+////                                LatLng latLng = new LatLng(-23.500712, -46.575707);
+//                                notification.setTokenUser(tokenDevice);
+//                                notification.setNameUser(userName);
+//                                notification.setMessageAlert(" pode não estar passando bem. Que tal ajudar?!");
+//                                notification.setLatLngUser(latLng);
+//                                notification.setIdUser(userID);
+//
+//
+//                                JsonObject jsonObj = new JsonObject();
+//                                jsonObj.addProperty("to", getClientTokenDevice());
+//
+//                                JsonObject notificationData = new JsonObject();
+//                                notificationData.addProperty("id", notification.getIdUser());
+//                                notificationData.addProperty("name", notification.getNameUser());
+//                                notificationData.addProperty("message", notification.getMessageAlert());
+//                                notificationData.addProperty("latlng", notification.getLatLngUser().toString());
+//
+//
+//                                jsonObj.add("data", notificationData);
+//
+//                                JsonObject msgObj = new JsonObject();
+//                                msgObj.add("message", jsonObj);
+//
+//                                Log.d(TAG,"data  message " + jsonObj.toString());
+////
+//                                String json = jsonObj.toString();
+////                return notification;
+//
+////                                /** OnShakeListener that is called when shake is detected. */
+////                                private OnRefreshListener() mRequestListener;
+////
+////                                /**
+////                                 * Interface for shake gesture.
+////                                 */
+////                                public interface OnRequestListener {
+////
+////                                    /**
+////                                     * Called when shake gesture is detected.
+////                                     */
+////                                    void onRequest();
+////                                }
+////
+////                                public void setOnShakeListener(ServiceShakeNotification.OnShakeListener listener) {
+////                                    mShakeListener = listener;
+////                                }
+//
+//
+//                                try {
+//
+//                                    sendAlert(json);
+////                            sendData();
+////                            sendNotification();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//
+//                            }
+//                        });
 
 
 //                        try {
@@ -244,11 +268,14 @@ public class DataFragment extends Fragment{
             }
         });
 
+
+
+
         return  v;
     }
 
     private void sendAlert(String json) throws IOException {
-        requestPostFCM(json);
+//        requestPostFCM(json);
 //        getDataFirebase();
 //        Log.d(TAG,"Nome:"+ userName + " - " + "Token: " + tokenDevice);
 //        Toast.makeText(getActivity(), "Nome:"+ userName + " - " + "Token: " + tokenDevice, Toast.LENGTH_SHORT).show();
@@ -438,7 +465,8 @@ public class DataFragment extends Fragment{
 
     private String getFCMDataMessage() {
 
-        Item item = getClientTokenAndData();
+//        Item item = getClientTokenAndData();
+        Item item = null;
 
         JsonObject jsonObj = new JsonObject();
         jsonObj.addProperty("to", item.getToken());
@@ -462,12 +490,12 @@ public class DataFragment extends Fragment{
         String notificationTitle = "SOS";
         String notificationBody = "Caio está passando mal e precisa de sua ajuda !";
 
-        requestPostFCM(getFCMNotificationMessage(notificationTitle, notificationBody));
+//        requestPostFCM(getFCMNotificationMessage(notificationTitle, notificationBody));
     }
 
     private Item getClientTokenAndData() {
         Item item = new Item();
-        item.setToken(getClientTokenDevice());
+//        item.setToken(getClientTokenDevice());
         item.setName("SeuCaiOo, ");
         item.setPrice("Não está bem, precisa de sua ajuda !");
         item.setLocation("SP");
@@ -489,7 +517,7 @@ public class DataFragment extends Fragment{
 
 //        jsonObj.add("to", to);
         jsonObj.add("notification", notification);
-        jsonObj.addProperty("to", getClientTokenDevice());
+//        jsonObj.addProperty("to", getClientTokenDevice());
 //        jsonObj.add("to", to);
 
 
@@ -508,12 +536,16 @@ public class DataFragment extends Fragment{
 
 
         //https://iid.googleapis.com/notification?notification_key_name=Hi-Health1
-        return "APA91bETZ4mQB36PSj6w7QQFIE6vJm8YXtrwM4FBBWyR3kdTe_nyT4qoZimj0SYGQm4KWXhsT4nYRM6iBQHIcvEzCR4GxTzbMU-H27RAprF_CX-T7K3Ngx0";
+//        return "APA91bETZ4mQB36PSj6w7QQFIE6vJm8YXtrwM4FBBWyR3kdTe_nyT4qoZimj0SYGQm4KWXhsT4nYRM6iBQHIcvEzCR4GxTzbMU-H27RAprF_CX-T7K3Ngx0";
+        //meu token
+
+        return "cWX0rpzLwWQ:APA91bEyL7XD1bImlhlqPQl8FCVO3RqZhwKf1TH3oe3cp04sn2ZVVW30E66GuNFkuUj9R95AlDKRG1hhpUyMWx7CBDcFqq5rvH4n8Z9aq3wUrsfvwv5UNR00F9OlsqmQCOzK0JfjCsOm";
+
 //        return "APA91bH1EsOjP_6VN_khTaDF1YDhWv88LwRF8-hUKCKZSqwkylnyekW36qoLsgAhs2QVN98sS-Oqxy7lYbeYd5cEISDw_UKd3Edw_NxWIIHVbglDsEhiI-E";
     }
 
     private void sendData() throws IOException {
-        requestPostFCM(getFCMDataMessage());
+//        requestPostFCM(getFCMDataMessage());
     }
 
 

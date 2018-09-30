@@ -1,8 +1,10 @@
 package br.com.thecharles.hihealth.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,6 +47,7 @@ import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
 
 import br.com.thecharles.hihealth.R;
+import br.com.thecharles.hihealth.ServiceShakeNotification;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.fragments.ContactsFragment;
 import br.com.thecharles.hihealth.fragments.DataFragment;
@@ -72,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements
     private String heartRateMax = "0.0";
     private String heartRateMin = "0.0";
     private String stepsCount = "0";
-
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -129,6 +131,9 @@ public class MainActivity extends AppCompatActivity implements
                 .enableAutoManage(this, 0, this)
                 .build();
 
+        Intent intent = new Intent(this, ServiceShakeNotification.class);
+        //Start Service
+        startService(intent);
 
     }
 

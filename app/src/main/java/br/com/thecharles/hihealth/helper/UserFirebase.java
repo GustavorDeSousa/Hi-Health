@@ -1,11 +1,26 @@
 package br.com.thecharles.hihealth.helper;
 
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.JsonObject;
 
+import java.io.IOException;
+
+import br.com.thecharles.hihealth.ServiceShakeNotification;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
+import br.com.thecharles.hihealth.model.Location;
+import br.com.thecharles.hihealth.model.User;
 
 public class UserFirebase {
+
+
 
     public static String getUId(){
 
@@ -23,6 +38,7 @@ public class UserFirebase {
         FirebaseAuth usuario = SettingsFirebase.getFirebaseAutenticacao();
         return usuario.getCurrentUser();
     }
+
 
 //    public static boolean atualizarNomeUsuario(String nome){
 //
