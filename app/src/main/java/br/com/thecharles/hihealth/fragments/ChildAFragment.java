@@ -49,11 +49,12 @@ public class ChildAFragment extends Fragment {
 
     private ValueEventListener valueEventListenerHeart;
 
-//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
+    DatabaseReference firebaseRefDebug = firebaseRef.child("debug");
+
+    //    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-    DatabaseReference firebaseRef = SettingsFirebase.getFirebaseDatabase();
-    DatabaseReference dataUserRef = firebaseRef.child("debug").child("user");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,54 +64,24 @@ public class ChildAFragment extends Fragment {
         tvRateHeart = v.findViewById(R.id.tvRateHeart);
 
         // Todo - Fazer os dados retornar corretamente
-
         FirebaseUser user = firebaseAuth.getCurrentUser();
         userID = user.getUid();
 
-        userID = UserFirebase.getUId();
+        DatabaseReference reference = firebaseRefDebug.child("users");
 
-
-        dataUserRef = dataUserRef.child(userID);
-        return v;
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        getHeartRate();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        dataUserRef.removeEventListener(valueEventListenerHeart);
-    }
-
-    public void getHeartRate() {
-        valueEventListenerHeart = dataUserRef.addValueEventListener(new ValueEventListener() {
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot dados: dataSnapshot.getChildren())  {
-                    Sensor sensor = dados.child("sensor").getValue(Sensor.class);
-
-
-                    String heartRate = sensor.getHeartRate();
-                    tvRateHeart.setText(heartRate);
-
-                    //display all the information
-                    Log.d(TAG, "showData: Heart: " + sensor.getHeartRate());
+                Sensor sensor = new Sensor();
+                sensor.setHeartRate(dataSnapshot.child(userID)
+                        .child("sensor").getValue(Sensor.class).getHeartRate()); //set the step
 
 
-//                    Log.d(TAG, "Contatos: " + user.getName() + " - " + user.getEmail() + "\n");
-                }
+                String heartRate = sensor.getHeartRate();
+                tvRateHeart.setText(heartRate);
 
-//                Sensor sensor =   sensor.setHeartRate(dataSnapshot.child(userID)
-//                        .child("sensor").getValue(Sensor.class).getHeartRate()); //set the heart
-
-
-
+                //display all the information
+                Log.d(TAG, "showData: Heart: " + sensor.getHeartRate());
             }
 
             @Override
@@ -118,5 +89,56 @@ public class ChildAFragment extends Fragment {
 
             }
         });
+
+
+
+//        dataUserRef = dataUserRef.child(userID);
+        return v;
     }
+
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        getHeartRate();
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        dataUserRef.removeEventListener(valueEventListenerHeart);
+//    }
+
+//    public void getHeartRate() {
+//        valueEventListenerHeart = dataUserRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                for (DataSnapshot dados: dataSnapshot.getChildren())  {
+//                    Sensor sensor = dados.child("sensor").getValue(Sensor.class);
+//
+//
+//                    String heartRate = sensor.getHeartRate();
+//                    tvRateHeart.setText(heartRate);
+//
+//                    //display all the information
+//                    Log.d(TAG, "showData: Heart: " + sensor.getHeartRate());
+//
+//
+////                    Log.d(TAG, "Contatos: " + user.getName() + " - " + user.getEmail() + "\n");
+//                }
+//
+////                Sensor sensor =   sensor.setHeartRate(dataSnapshot.child(userID)
+////                        .child("sensor").getValue(Sensor.class).getHeartRate()); //set the heart
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 }
