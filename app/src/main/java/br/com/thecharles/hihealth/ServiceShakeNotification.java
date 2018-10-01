@@ -16,9 +16,12 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import br.com.thecharles.hihealth.activity.MainActivity;
+
+import static android.os.Build.ID;
 
 public class ServiceShakeNotification extends Service implements SensorEventListener {
     /** Minimum movement force to consider. */
@@ -35,6 +38,7 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 
     /** Minimum allowed time for shake gesture. */
     private static final int MIN_TOTAL_DURATION_OF_SHAKE = 600; // 3 seconds
+    private static final String TAG = ServiceShakeNotification.class.getSimpleName();
 
     /** Time when the gesture started. */
     private long mFirstDirectionChangeTime = 0;
@@ -147,8 +151,9 @@ public class ServiceShakeNotification extends Service implements SensorEventList
                         long totalDuration = now - mFirstDirectionChangeTime;
                         if (totalDuration >= MIN_TOTAL_DURATION_OF_SHAKE) {
 //                            mShakeListener.onShake();
-                            alert.getDataNotification();
-                            showNotification();
+//                            alert.getDataNotification();
+//                            showNotification();
+                            showCountDown();
                             resetShakeParameters();
                         }
                     }
@@ -173,6 +178,86 @@ public class ServiceShakeNotification extends Service implements SensorEventList
         lastZ = 0;
     }
 
+    private void showCountDown() {
+
+        // Create a Notification Builder instance.
+        int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
+        int largeIconResId = R.drawable.ic_account_circle_black_24dp;
+        long sendTime = System.currentTimeMillis();
+
+        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.view_collapsed_notification);
+//        collapsedView.setTextViewText(R.id.timestamp, DateUtils.formatDateTime(this, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME));
+        collapsedView.setTextViewText(R.id.content_text, "");
+        collapsedView.setTextViewText(R.id.content_title, "ATENÇÃO - Está tudo bem com você ?");
+
+//        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this,
+//                MainActivity.class), 0);
+
+        // First let's define the intent to trigger when notification is selected
+// Start out by creating a normal intent (in this case to open an activity)
+        Intent intent = new Intent(this, MainActivity.class);
+// Next, let's turn this into a PendingIntent using
+//   public static PendingIntent getActivity(Context context, int requestCode,
+//       Intent intent, int flags)
+        int requestID = (int) System.currentTimeMillis(); //unique requestID to differentiate between various notification with same NotifId
+        int flags = PendingIntent.FLAG_CANCEL_CURRENT; // cancel old intent and create new one
+        PendingIntent pIntent = PendingIntent.getActivity(this, 104, intent, flags);
+
+
+        final NotificationManager mNotifyManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this, "fcm-instance-specific");
+        mBuilder.setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
+                .setUsesChronometer(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setCustomContentView(collapsedView)
+                .setFullScreenIntent(pIntent, true)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                .addAction(R.drawable.ic_check_black_24dp, "SIM", pIntent)
+                .addAction(R.drawable.ic_close_black_24dp, "NÃO", pIntent).build()
+        ;
+
+
+// Start a lengthy operation in a background thread
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        int incr;
+                        // Do the "lengthy" operation 20 times
+                        for (incr = 0; incr <= 20; incr+=3) {
+                            // Sets the progress indicator to a max value, the
+                            // current completion percentage, and "determinate"
+                            // state
+                            mBuilder.setProgress(20, incr, false);
+                            // Displays the progress bar for the first time.
+                            mNotifyManager.notify(104, mBuilder.build());
+                            // Sleeps the thread, simulating an operation
+                            // that takes time
+                            try {
+                                // Sleep for 5 seconds
+                                Thread.sleep(2*1000);
+                            } catch (InterruptedException e) {
+                                Log.d(TAG, "sleep failure");
+                            }
+                        }
+                        // When the loop is finished, updates the notification
+//                        mBuilder.setContentText("Download complete")
+//                                // Removes the progress bar
+//                                .setProgress(0,0,false);
+
+                        showNotification();
+//                        mNotifyManager.notify(0, mBuilder.build());
+                    }
+                }
+// Starts the thread by calling the run() method in its Runnable
+        ).start();
+
+    }
+
     /**
      * show notification when Accel is more then the given int.
      */
@@ -188,13 +273,13 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 
         RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.view_collapsed_notification);
         collapsedView.setTextViewText(R.id.timestamp, DateUtils.formatDateTime(this, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME));
-        collapsedView.setTextViewText(R.id.content_text, "Está tudo bem com você? \nSeus amigos foram notificados!");
+        collapsedView.setTextViewText(R.id.content_text, "Seus amigos foram notificados!");
         collapsedView.setTextViewText(R.id.content_title, "Alerta Enviado");
 
         PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this,
                 MainActivity.class), 0);
 
-        NotificationCompat.Builder notificationBuilder =
+        final NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, "fcm-instance-specific")
                         .setSmallIcon(smallIconResId)
 //                        .setTicker(title)
@@ -205,14 +290,15 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 //                        .setBadgeIconType(R.drawable.ic_favorite_black_24dp)
 //                        .setVibrate()
                         .setAutoCancel(false)
+//                        .setUsesChronometer(true)
 //                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 //                        .setLargeIcon(largeIconBitmap)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText("New Message Alert!"))
-                        .setContentIntent(pi)
+//                        .setContentIntent(pi)
                         //Heads-up notification.
                         .setCustomContentView(collapsedView)
                         .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-//                        .setFullScreenIntent(pendingIntent, true)
+                        .setFullScreenIntent(pi, true)
                         .setWhen(sendTime)
                         .setDefaults(Notification.DEFAULT_ALL)
                 ;
@@ -222,10 +308,45 @@ public class ServiceShakeNotification extends Service implements SensorEventList
         alert.flags =
                 //Noticaçao permanente
                 Notification.FLAG_ONGOING_EVENT |
-                Notification.FLAG_SHOW_LIGHTS
-                        //Vibrar até olhar a mensagem
+                        Notification.FLAG_SHOW_LIGHTS
+        //Vibrar até olhar a mensagem
 //                        | Notification.FLAG_INSISTENT
-                ;
+        ;
+
+//// Start a lengthy operation in a background thread
+//        new Thread(
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        int incr;
+//                        // Do the "lengthy" operation 20 times
+//                        for (incr = 0; incr <= 50; incr+=5) {
+//                            // Sets the progress indicator to a max value, the
+//                            // current completion percentage, and "determinate"
+//                            // state
+//                            notificationBuilder.setProgress(50, incr, false);
+//                            // Displays the progress bar for the first time.
+//                            notificationManager.notify(0, notificationBuilder.build());
+//                            // Sleeps the thread, simulating an operation
+//                            // that takes time
+//                            try {
+//                                // Sleep for 5 seconds
+//                                Thread.sleep(1*1000);
+//                            } catch (InterruptedException e) {
+//                                Log.d(TAG, "sleep failure");
+//                            }
+//                        }
+//                        // When the loop is finished, updates the notification
+//                        notificationBuilder.setContentText("Download complete")
+//                                // Removes the progress bar
+//                                .setProgress(0,0,false);
+//                        notificationManager.notify(104, notificationBuilder.build());
+//                    }
+//                }
+//// Starts the thread by calling the run() method in its Runnable
+//        ).start();
+//
+
 
         notificationManager.notify(104, notificationBuilder.build());
 
