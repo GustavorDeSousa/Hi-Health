@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -141,6 +142,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_person_pin_circle_black_24dp))
                         .setContentTitle(title)
                         .setContentText(body)
+                        .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
 
 //                        .setBadgeIconType(R.drawable.ic_favorite_black_24dp)
 //                        .setVibrate()
@@ -150,7 +152,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
 //                        .setContentIntent(contentIntent)
                         //Heads-up notification.
-                        .setCustomContentView(collapsedView)
+//                        .setCustomContentView(collapsedView)
                         .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                         .setFullScreenIntent(pendingIntent, true)
                         .setWhen(sendTime)

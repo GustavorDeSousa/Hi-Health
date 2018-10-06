@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -117,7 +118,7 @@ public class ServiceShakeNotification extends Service implements SensorEventList
         // calculate movement
         float totalMovement = Math.abs(x + y + z - lastX - lastY - lastZ);
 
-        if (mAccel > 20) {
+        if (mAccel > 40) {
 //            showNotification();
 
             if (totalMovement > MIN_FORCE) {
@@ -183,6 +184,8 @@ public class ServiceShakeNotification extends Service implements SensorEventList
         // Create a Notification Builder instance.
         int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
         int largeIconResId = R.drawable.ic_account_circle_black_24dp;
+        int checkIconResId = R.drawable.ic_check_black_24dp;
+        int closeIconResId = R.drawable.ic_close_black_24dp;
         long sendTime = System.currentTimeMillis();
 
         RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.view_collapsed_notification);
@@ -211,13 +214,17 @@ public class ServiceShakeNotification extends Service implements SensorEventList
         mBuilder.setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
                 .setUsesChronometer(true)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setCustomContentView(collapsedView)
+                .setContentTitle("Hi-Health")
+                .setContentText("Está tudo bem com você ?")
+                .setWhen(sendTime)
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+//                .setCustomContentView(collapsedView)
                 .setFullScreenIntent(pIntent, true)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setContentIntent(pIntent)
                 .setAutoCancel(true)
-                .addAction(R.drawable.ic_check_black_24dp, "SIM", pIntent)
-                .addAction(R.drawable.ic_close_black_24dp, "NÃO", pIntent).build()
+                .addAction(checkIconResId, "SIM", pIntent)
+                .addAction(closeIconResId, "NÃO", pIntent).build()
         ;
 
 
@@ -283,6 +290,9 @@ public class ServiceShakeNotification extends Service implements SensorEventList
                 new NotificationCompat.Builder(this, "fcm-instance-specific")
                         .setSmallIcon(smallIconResId)
 //                        .setTicker(title)
+                        .setContentTitle("Alerta Enviado")
+                        .setContentText("Seus amigos foram notificados!")
+                        .setContentInfo("sei la oq colocar aqui")
 //                        .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_person_pin_circle_black_24dp))
 //                        .setContentTitle("Device Accelerometer Notification")
 //                        .setContentText("New Message Alert!")
@@ -296,7 +306,8 @@ public class ServiceShakeNotification extends Service implements SensorEventList
                         .setStyle(new NotificationCompat.BigTextStyle().bigText("New Message Alert!"))
 //                        .setContentIntent(pi)
                         //Heads-up notification.
-                        .setCustomContentView(collapsedView)
+//                        .setCustomContentView(collapsedView)
+                        .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                         .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                         .setFullScreenIntent(pi, true)
                         .setWhen(sendTime)
