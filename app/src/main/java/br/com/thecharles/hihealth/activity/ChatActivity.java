@@ -1,5 +1,6 @@
 package br.com.thecharles.hihealth.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.thecharles.hihealth.MyFirebaseMessagingService;
+import br.com.thecharles.hihealth.NotificationFCM;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.adapter.MessagesAdapter;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
@@ -110,6 +113,7 @@ public class ChatActivity extends AppCompatActivity {
     public void sendMessage(View view) {
         String stringMessage = editMsg.getText().toString();
 
+
         if (!stringMessage.isEmpty()) {
             Message message = new Message();
             message.setIdSender(idUserSender);
@@ -119,6 +123,9 @@ public class ChatActivity extends AppCompatActivity {
             saveMessage(idUserSender,idUserReceiver, message);
             //TODO Salvar menssagem para o destinatário
             saveMessage(idUserReceiver,idUserSender, message);
+
+            NotificationFCM messageNotification = new NotificationFCM();
+            messageNotification.getMessageChat(stringMessage, idUserReceiver);
         } else {
             Toast.makeText(ChatActivity.this,
                     "Digite uma mensagem para enviar.", Toast.LENGTH_SHORT).show();

@@ -8,8 +8,13 @@ public class Message implements Serializable {
     private String message;
     private String file;
 
+    private String token;
+    private String nameSender;
+
     public Message() {
     }
+
+
 
     public String getIdSender() {
         return idSender;
@@ -35,6 +40,24 @@ public class Message implements Serializable {
 
     public Message setFile(String file) {
         this.file = file;
+        return this;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public Message setToken(String token) {
+        this.token = token;
+        return this;
+    }
+
+    public String getNameSender() {
+        return nameSender;
+    }
+
+    public Message setNameSender(String nameSender) {
+        this.nameSender = nameSender;
         return this;
     }
 }

@@ -1,11 +1,15 @@
 package br.com.thecharles.hihealth.activity;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +17,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -46,6 +52,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
 
+import br.com.thecharles.hihealth.NotificationFCM;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.ServiceShakeNotification;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
@@ -53,6 +60,7 @@ import br.com.thecharles.hihealth.fragments.ContactsFragment;
 import br.com.thecharles.hihealth.fragments.DataFragment;
 import br.com.thecharles.hihealth.fragments.ProfileFragment;
 import br.com.thecharles.hihealth.model.Location;
+import br.com.thecharles.hihealth.model.Message;
 import br.com.thecharles.hihealth.model.Sensor;
 
 // TODO Corrigir bug de ciclo de vida
@@ -75,6 +83,14 @@ public class MainActivity extends AppCompatActivity implements
     private String heartRateMax = "0.0";
     private String heartRateMin = "0.0";
     private String stepsCount = "0";
+
+    String name;
+    String id;
+    private String idUserSender;
+    private String idUserReceiver;
+    private static final String KEY_TEXT_REPLY = "key_text_reply";
+    int mRequestCode = 1000;
+    private static final String CHANNEL_ID = "channel_message";
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -135,9 +151,91 @@ public class MainActivity extends AppCompatActivity implements
         //Start Service
         startService(intent);
 
+        //TODO Recuperar dados do usuário destinatario
+        Bundle bundle = getIntent().getExtras();
+
+        idUserSender = firebaseAuth.getCurrentUser().getUid();
+
+        if (bundle != null) {
+
+            id = bundle.getString("idUser");
+
+//            String reply = bundle.getString("message", null);
+
+
+            if (id != null) {
+
+                Notification mBuilder =new NotificationCompat.Builder(this, CHANNEL_ID)
+                        // set title, message, etc.
+                        .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
+                        .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                        .setContentText("Resposta Enviada!")
+                        .build();
+
+                NotificationManager manager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    // Support for Android Oreo: Notification Channels
+                    NotificationChannel channel = new NotificationChannel(
+                            CHANNEL_ID,
+                            "Mensagens",
+                            NotificationManager.IMPORTANCE_MIN);
+                    manager.createNotificationChannel(channel);
+                }
+
+
+
+                manager.notify(mRequestCode,mBuilder);
+//                Bundle remoteInput = RemoteInput.getResultsFromIntent(getIntent());
+////        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
+//                CharSequence msg = remoteInput.getCharSequence(reply);
+//
+                String strMsg = (getMessageText(getIntent())).toString();
+
+                name = bundle.getString("nameUser");
+//                tvUserAlert.setText(name);
+
+                idUserReceiver = id;
+                Message message = new Message();
+                message.setIdSender(idUserSender);
+                message.setNameSender(name);
+                message.setMessage(strMsg);
+
+//                //TODO Salvar menssagem para o remetente
+                saveMessage(idUserSender,idUserReceiver, message);
+//                //TODO Salvar menssagem para o destinatário
+                saveMessage(idUserReceiver,idUserSender, message);
+//
+
+                NotificationFCM messageNotification = new NotificationFCM();
+                messageNotification.getMessageChat(strMsg, idUserReceiver);
+            }
+        }
+
     }
 
 
+    private CharSequence getMessageText(Intent intent) {
+        Bundle remoteInput = android.app.RemoteInput.getResultsFromIntent(intent);
+        if(remoteInput != null){
+            return remoteInput.getCharSequence(KEY_TEXT_REPLY);
+        }
+        return null;
+    }
+
+
+    private void saveMessage(String idSender, String idReceiver, Message msg) {
+        DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
+        DatabaseReference firebaseRefDebug = database.child("debug");
+        DatabaseReference messageRef = firebaseRefDebug.child("messages");
+
+        messageRef.child(idSender)
+                .child(idReceiver)
+                .push()
+                .setValue(msg);
+
+
+    }
 
     @Override
     protected void onStart() {

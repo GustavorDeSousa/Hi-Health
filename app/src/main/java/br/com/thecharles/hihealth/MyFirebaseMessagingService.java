@@ -26,6 +26,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
+import br.com.thecharles.hihealth.activity.ChatActivity;
 import br.com.thecharles.hihealth.activity.MainActivity;
 import br.com.thecharles.hihealth.activity.MapsActivity;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
@@ -83,14 +84,116 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             sendNotification(null, remoteMessage.getData());
 //            showBundleNotification();
+            getMessages(null, remoteMessage.getData());
 
         }
         if (remoteMessage.getNotification() != null) {
             sendNotification(remoteMessage.getNotification(), null);
+            getMessages(remoteMessage.getNotification(), null);
 //            showBundleNotification();
 
         }
     }
+
+    private void getMessages(RemoteMessage.Notification message, Map<String, String> data) {
+
+        String title;
+        String body;
+
+        if(message == null){
+            title = data.get("name") + " enviou uma mensagem";
+            body = data.get("message")
+//                    + " = " + data.get("userName")
+            ;
+        }else{
+            title = message.getTitle();
+            body  = message.getBody();
+        }
+
+
+        Intent intent = new Intent(MyFirebaseMessagingService.this,MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("idUser", data.get("id"));
+        bundle.putString("nameUser", data.get("name"));
+        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        TaskStackBuilder taskStack = TaskStackBuilder.create(this);
+        taskStack.addParentStack(ChatActivity.class);
+        taskStack.addNextIntent(intent);
+
+
+        String reply = "RESPONDER";
+        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+                .setLabel("Mensagem")
+                .build();
+
+        PendingIntent pendingIntent = taskStack.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
+
+
+        NotificationCompat.Action action = new NotificationCompat.Action.Builder(
+                R.mipmap.ic_launcher_round, reply, pendingIntent)
+                .addRemoteInput(remoteInput).build();
+
+
+        Notification builder =new NotificationCompat.Builder(this, CHANNEL_ID)
+                // set title, message, etc.
+                .setAutoCancel(true)
+                .setSmallIcon(smallIconResId)
+                .addAction(action)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+//                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+//                        .setContentIntent(contentIntent)
+                //Heads-up notification.
+//                        .setCustomContentView(collapsedView)
+//                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setFullScreenIntent(pendingIntent, true)
+//                .setWhen(sendTime)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        //         Create Notification instance.
+        Notification alert = builder;
+        alert.flags =
+                //Noticaçao permanente
+//                Notification.FLAG_ONGOING_EVENT |
+                Notification.FLAG_SHOW_LIGHTS
+        //Vibrar até olhar a mensagem
+//                        | Notification.FLAG_INSISTENT
+        ;
+
+
+
+        NotificationManager manager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Support for Android Oreo: Notification Channels
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Mensagens",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.enableLights(true);
+            channel.enableVibration(true);
+            manager.createNotificationChannel(channel);
+        }
+
+//        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(mRequestCode,builder);
+
+
+
+
+
+
+
+    }
+
+
 
 //    private void sendMsg() {
 //        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
@@ -417,97 +520,97 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-    public NotificationCompat.Builder createNotificationBuider(Context context,
-                                                               String title, String message) {
-        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.ic_account_circle_black_24dp);
-        return new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setLargeIcon(largeIcon)
-                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                .setAutoCancel(true);
-    }
-
-    /*
-
-        public NotificationCompat.Builder createNotificationBuider(RemoteMessage.Notification notification,
-                                                                   Map<String, String> data) {
-
-            String title;
-            String body;
-
-            if(notification == null){
-                title = "Hi-Health";
-                body = data.get("name")+ data.get("message")
-                                  + " = " + data.get("userName")
-                ;
-            }else{
-                title = notification.getTitle();
-                body  = notification.getBody();
-            }
-
-            Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(),
-                    R.drawable.ic_account_circle_black_24dp);
-            return new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setLargeIcon(largeIcon)
-                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                    .setAutoCancel(true);
-        }
-
-    */
-    private Intent getMessageReplyIntent(String label) {
-        return new Intent()
-                .addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
-                .setAction(REPLY_ACTION)
-                .putExtra(KEY_PRESSED_ACTION, label);
-    }
+//    public NotificationCompat.Builder createNotificationBuider(Context context,
+//                                                               String title, String message) {
+//        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),
+//                R.drawable.ic_account_circle_black_24dp);
+//        return new NotificationCompat.Builder(context)
+//                .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                .setContentTitle(title)
+//                .setContentText(message)
+//                .setLargeIcon(largeIcon)
+//                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+//                .setAutoCancel(true);
+//    }
 
 
-    private void showNotification(Context context, Notification notification, int id) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(id, notification);
-    }
+
+//    public NotificationCompat.Builder createNotificationBuider(RemoteMessage.Notification notification,
+//                                                               Map<String, String> data) {
+//
+//        String title;
+//        String body;
+//
+//        if(notification == null){
+//            title = "Hi-Health";
+//            body = data.get("name")+ data.get("message")
+//                    + " = " + data.get("userName")
+//            ;
+//        }else{
+//            title = notification.getTitle();
+//            body  = notification.getBody();
+//        }
+//
+//        Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(),
+//                R.drawable.ic_account_circle_black_24dp);
+//        return new NotificationCompat.Builder(this)
+//                .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                .setContentTitle(title)
+//                .setContentText(body)
+//                .setLargeIcon(largeIcon)
+//                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+//                .setAutoCancel(true);
+//    }
+//
+//
+//    private Intent getMessageReplyIntent(String label) {
+//        return new Intent()
+//                .addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+//                .setAction(REPLY_ACTION)
+//                .putExtra(KEY_PRESSED_ACTION, label);
+//    }
+//
+//
+//    private void showNotification(Context context, Notification notification, int id) {
+//        NotificationManager mNotificationManager =
+//                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//        mNotificationManager.notify(id, notification);
+//    }
 
 
-    public void showRemoteInputNotification(Context context) {
-        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
-                .setLabel(context.getString(R.string.text_label_reply))
-                .build();
-
-        PendingIntent replyIntent = PendingIntent.getActivity(context,
-                REPLY_INTENT_ID,
-                getMessageReplyIntent(LABEL_REPLY),
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        PendingIntent archiveIntent = PendingIntent.getActivity(context,
-                ARCHIVE_INTENT_ID,
-                getMessageReplyIntent(LABEL_ARCHIVE),
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Action replyAction =
-                new NotificationCompat.Action.Builder(android.R.drawable.sym_def_app_icon,
-                        LABEL_REPLY, replyIntent)
-                        .addRemoteInput(remoteInput)
-                        .build();
-
-        NotificationCompat.Action archiveAction =
-                new NotificationCompat.Action.Builder(android.R.drawable.sym_def_app_icon,
-                        LABEL_ARCHIVE, archiveIntent)
-                        .build();
-
-        NotificationCompat.Builder builder =
-                createNotificationBuider(context, "Remote input", "Try typing some text!");
-        builder.addAction(replyAction);
-        builder.addAction(archiveAction);
-
-        showNotification(context, builder.build(), REMOTE_INPUT_ID);
-    }
+//    public void showRemoteInputNotification(Context context) {
+//        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+//                .setLabel(context.getString(R.string.text_label_reply))
+//                .build();
+//
+//        PendingIntent replyIntent = PendingIntent.getActivity(context,
+//                REPLY_INTENT_ID,
+//                getMessageReplyIntent(LABEL_REPLY),
+//                PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        PendingIntent archiveIntent = PendingIntent.getActivity(context,
+//                ARCHIVE_INTENT_ID,
+//                getMessageReplyIntent(LABEL_ARCHIVE),
+//                PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        NotificationCompat.Action replyAction =
+//                new NotificationCompat.Action.Builder(android.R.drawable.sym_def_app_icon,
+//                        LABEL_REPLY, replyIntent)
+//                        .addRemoteInput(remoteInput)
+//                        .build();
+//
+//        NotificationCompat.Action archiveAction =
+//                new NotificationCompat.Action.Builder(android.R.drawable.sym_def_app_icon,
+//                        LABEL_ARCHIVE, archiveIntent)
+//                        .build();
+//
+//        NotificationCompat.Builder builder =
+//                createNotificationBuider(context, "Remote input", "Try typing some text!");
+//        builder.addAction(replyAction);
+//        builder.addAction(archiveAction);
+//
+//        showNotification(context, builder.build(), REMOTE_INPUT_ID);
+//    }
 
 //    private static Intent getDirectReplyIntent(Context context, String label) {
 //        return MyFirebaseMessagingService.getStartIntent(context)

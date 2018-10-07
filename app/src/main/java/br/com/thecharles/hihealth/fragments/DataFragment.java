@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
+import br.com.thecharles.hihealth.MyMessagesService;
 import br.com.thecharles.hihealth.NotificationFCM;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.ServiceShakeNotification;
@@ -109,6 +110,11 @@ public class DataFragment extends Fragment{
                         /** TESTE REQUEST FMC */
                         NotificationFCM alert = new NotificationFCM();
                         alert.getDataNotification();
+
+//                        NotificationFCM message = new NotificationFCM();
+//                        message.getMessageChat();
+//                        MyMessagesService serviceMsg = new MyMessagesService();
+//                        serviceMsg.getMessagesFCM();
 
 
 ////                        getDataFirebase();
