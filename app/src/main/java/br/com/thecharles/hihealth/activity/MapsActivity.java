@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
@@ -50,6 +51,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private String userID;
 
+
+    private static final String KEY_TEXT_REPLY = "key_text_reply";
+    int mRequestCode = 1000;
 
 //    DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
 //    DatabaseReference messageRef = firebaseRef.child("debug").child("messages");
@@ -159,6 +163,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double myLongitude = 0.0;
         double alertLongitude = 0.0;
 
+
+
 //        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
 //        CharSequence message = MyFirebaseMessagingService.getReplyMessage(it);
         idUserSender = firebaseAuth.getCurrentUser().getUid();
@@ -184,12 +190,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
             if (id != null) {
+
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
+                                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                                .setContentText("Mensagem Enviada!");
+
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(mRequestCode, mBuilder.build());
 //
 //                Bundle remoteInput = RemoteInput.getResultsFromIntent(getIntent());
 ////        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
 //                CharSequence msg = remoteInput.getCharSequence(reply);
 //
-//                String strMsg = msg.toString();
+                String strMsg = (getMessageText(getIntent())).toString();
 
 
 
@@ -205,15 +221,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 name = bundle.getString("nameUser");
                 tvUserAlert.setText(name);
 
-//                idUserReceiver = id;
-//                Message message = new Message();
-//                message.setIdSender(idUserSender);
-//                message.setMessage(strMsg);
+                idUserReceiver = id;
+                Message message = new Message();
+                message.setIdSender(idUserSender);
+                message.setMessage(strMsg);
 
 //                //TODO Salvar menssagem para o remetente
-//                saveMessage(idUserSender,idUserReceiver, message);
+                saveMessage(idUserSender,idUserReceiver, message);
 //                //TODO Salvar menssagem para o destinatário
-//                saveMessage(idUserReceiver,idUserSender, message);
+                saveMessage(idUserReceiver,idUserSender, message);
 //
 //                NotificationCompat.Builder notificationBuilder =
 //                        new NotificationCompat.Builder(this, "fcm-instance-specific")
@@ -294,6 +310,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        Log.d(TAG, "Mapa: "+ myHouse);
 
     }
+
+
+    private CharSequence getMessageText(Intent intent) {
+        Bundle remoteInput = android.app.RemoteInput.getResultsFromIntent(intent);
+        if(remoteInput != null){
+            return remoteInput.getCharSequence(KEY_TEXT_REPLY);
+        }
+        return null;
+    }
+
 
     private void saveMessage(String idSender, String idReceiver, Message msg) {
         DatabaseReference database = SettingsFirebase.getFirebaseDatabase();

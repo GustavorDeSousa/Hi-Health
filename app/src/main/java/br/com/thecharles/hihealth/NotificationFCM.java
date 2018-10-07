@@ -118,10 +118,10 @@ public class NotificationFCM {
         //https://iid.googleapis.com/notification?notification_key_name=Hi-Health1
 //        return "APA91bETZ4mQB36PSj6w7QQFIE6vJm8YXtrwM4FBBWyR3kdTe_nyT4qoZimj0SYGQm4KWXhsT4nYRM6iBQHIcvEzCR4GxTzbMU-H27RAprF_CX-T7K3Ngx0";
         //meu token
-        return "eHK1s3BDQQs:APA91bGhZ1Sk9dLpGlvz-riUV9qMrTlZ_WfKG-p6NJdkJLyRWeOFPXRFN43R066QAhR9MenVqhrxjJb9aPFUHVssUsQRPaHpGvyeM0R6x3XXsfFMtgFaJEJ-4qHKUeLnWlzc-8-UYUol";
+//        return "eHK1s3BDQQs:APA91bGhZ1Sk9dLpGlvz-riUV9qMrTlZ_WfKG-p6NJdkJLyRWeOFPXRFN43R066QAhR9MenVqhrxjJb9aPFUHVssUsQRPaHpGvyeM0R6x3XXsfFMtgFaJEJ-4qHKUeLnWlzc-8-UYUol";
 
         //token emulador api 25
-//        return "dUK_SbPXRI4:APA91bE1WG-yQ2Z3-Z-PQEG6lwglkK08k3mM6WZ9Qj5eZcdrTeI3T8PN70NNYpPEB-okfocSg6vzD4IlVunGw7bLY3byhF8rnvCoHn8rASmoi62BiBqRJn_R6EIwgE4ZHwmsOiglAkL-";
+        return "dUK_SbPXRI4:APA91bE1WG-yQ2Z3-Z-PQEG6lwglkK08k3mM6WZ9Qj5eZcdrTeI3T8PN70NNYpPEB-okfocSg6vzD4IlVunGw7bLY3byhF8rnvCoHn8rASmoi62BiBqRJn_R6EIwgE4ZHwmsOiglAkL-";
 
 //        return "APA91bH1EsOjP_6VN_khTaDF1YDhWv88LwRF8-hUKCKZSqwkylnyekW36qoLsgAhs2QVN98sS-Oqxy7lYbeYd5cEISDw_UKd3Edw_NxWIIHVbglDsEhiI-E";
     }

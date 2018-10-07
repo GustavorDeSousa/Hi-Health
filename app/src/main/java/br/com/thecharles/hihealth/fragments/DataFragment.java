@@ -107,8 +107,8 @@ public class DataFragment extends Fragment{
 
 
                         /** TESTE REQUEST FMC */
-                        NotificationFCM alert = new NotificationFCM();
-                        alert.getDataNotification();
+//                        NotificationFCM alert = new NotificationFCM();
+//                        alert.getDataNotification();
 
 
 ////                        getDataFirebase();
