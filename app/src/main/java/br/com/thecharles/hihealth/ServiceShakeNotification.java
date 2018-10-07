@@ -57,7 +57,7 @@ public class ServiceShakeNotification extends Service implements SensorEventList
     /** The last z position. */
     private float lastZ = 0;
 
-    NotificationFCM alert = new NotificationFCM();
+
 
     private static final int NOTIFICATION_ID = 8;
     private static final int PROGRESS_ID = 44;
@@ -320,34 +320,6 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 //        thread.interrupt();
     }
 
-
-
-
-    /**
-     * The broadcast receiver class for notifications. Responds to the update notification and
-     * cancel notification pending intents actions.
-     */
-    private class NotificationReceiver extends BroadcastReceiver {
-
-        /**
-         * Gets the action from the incoming broadcast intent and responds accordingly
-         * @param context Context of the app when the broadcast is received.
-         * @param intent The broadcast intent containing the action.
-         */
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            switch (action){
-                case ACTION_SEND_NOTIFICATION:
-                    sendNotification();
-                    break;
-                case ACTION_CANCEL_NOTIFICATION:
-                    cancelNotification();
-                    break;
-            }
-        }
-    }
-
     /**
      * show notification when Accel is more then the given int.
      */
@@ -356,7 +328,8 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 //        final NotificationManager notificationManager =
 //                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        alert = new NotificationFCM();
+
+        NotificationFCM alert = new NotificationFCM();
         alert.getDataNotification();
 
         // Create a Notification Builder instance.
@@ -551,7 +524,36 @@ public class ServiceShakeNotification extends Service implements SensorEventList
         mNotifyManager.notify(PROGRESS_ID, myNotification);
 
 //        mNotifyManager.cancel(PROGRESS_ID);
-}
+    }
+
+
+
+    /**
+     * The broadcast receiver class for notifications. Responds to the update notification and
+     * cancel notification pending intents actions.
+     */
+    private class NotificationReceiver extends BroadcastReceiver {
+
+        /**
+         * Gets the action from the incoming broadcast intent and responds accordingly
+         * @param context Context of the app when the broadcast is received.
+         * @param intent The broadcast intent containing the action.
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action){
+                case ACTION_SEND_NOTIFICATION:
+                    sendNotification();
+                    break;
+                case ACTION_CANCEL_NOTIFICATION:
+                    cancelNotification();
+                    break;
+            }
+        }
+    }
+
+
 
 
     Thread thread = new Thread(
@@ -583,9 +585,18 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 //                                // Removes the progress bar
 //                                .setProgress(0,0,false);
 
-                                if (incr != 100 || incr != 90) {
+                                if (incr == 100) {
+                                }
+
+                                else if (incr == 95) {
+                                }
+                                else if (incr == 90) {
+                                }
+                                else {
                                     sendNotification();
                                 }
+
+
 
 
 
