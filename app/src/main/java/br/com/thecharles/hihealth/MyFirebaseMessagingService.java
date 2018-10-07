@@ -2,12 +2,14 @@ package br.com.thecharles.hihealth;
 
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
@@ -40,8 +42,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private String idUserReceiver;
 
 
-
-
     //    String KEY_REPLY = "key_reply";
     private static final String KEY_REPLY = "key_text_reply";
     public static final int NOTIFICATION_ID = 1;
@@ -51,8 +51,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String KEY_TEXT_REPLY = "key_text_reply";
     int mRequestCode = 1000;
 
-
-
+    private static final String CHANNEL_ID = "channel_alert";
 
 
     public static final int REPLY_INTENT_ID = 0;
@@ -137,10 +136,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), it,0);
 
 
-        String reply = "RESPONDER";
-        android.app.RemoteInput remoteInput = new android.app.RemoteInput.Builder(KEY_TEXT_REPLY)
-                .setLabel("Mensagem")
-                .build();
+
 
 
 
@@ -157,20 +153,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         taskStack.addParentStack(MapsActivity.class);
         taskStack.addNextIntent(intent);
 
+
+        String reply = "RESPONDER";
+        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+                .setLabel("Mensagem")
+                .build();
+
         PendingIntent pendingIntent = taskStack.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
 
-        Notification.Action action = new Notification.Action.Builder(R.mipmap.ic_launcher_round,
-                reply,pendingIntent)
-                .addRemoteInput(remoteInput)
-                .build();
+//        NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_prev, "Previous", prevPendingIntent).build();
 
-        Notification.Builder builder =  new Notification.Builder(getApplicationContext())
-                .addAction(action)
+
+        NotificationCompat.Action action = new NotificationCompat.Action.Builder(
+                R.mipmap.ic_launcher_round, reply, pendingIntent)
+                .addRemoteInput(remoteInput).build();
+
+//        Notification.Action action = new NotificationCompat.Action.Builder(R.mipmap.ic_launcher_round,
+//                reply,pendingIntent)
+//                .addRemoteInput(remoteInput)
+//                .build();
+
+
+
+        Notification builder =new NotificationCompat.Builder(this, CHANNEL_ID)
+                // set title, message, etc.
                 .setAutoCancel(true)
                 .setSmallIcon(smallIconResId)
+                .addAction(action)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
@@ -182,10 +194,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setFullScreenIntent(pendingIntent, true)
 //                .setWhen(sendTime)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .build();
 
         //         Create Notification instance.
-        Notification alert = builder.build();
+        Notification alert = builder;
         alert.flags =
                 //Noticaçao permanente
 //                Notification.FLAG_ONGOING_EVENT |
@@ -194,8 +207,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         | Notification.FLAG_INSISTENT
         ;
 
-        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(mRequestCode,builder.build());
+        NotificationManager manager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Support for Android Oreo: Notification Channels
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Alertas",
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.enableLights(true);
+            channel.enableVibration(true);
+            manager.createNotificationChannel(channel);
+        }
+
+//        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(mRequestCode,builder);
 
 
 //        Intent it = new Intent(this,  MapsActivity.class);
@@ -226,28 +252,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.ic_account_circle_black_24dp);
 
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, "fcm-instance-specific")
-                        .setSmallIcon(smallIconResId)
-//                        .setTicker(title)
-                        .setContentTitle(title)
-                        .setContentText(body)
-                        .setLargeIcon(largeIcon)
-                        .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-//                        .setBadgeIconType(R.drawable.ic_favorite_black_24dp)
-//                        .setVibrate()
-                        .setAutoCancel(false)
-//                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-//                        .setLargeIcon(largeIconBitmap)
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
-//                        .setContentIntent(contentIntent)
-                        //Heads-up notification.
-//                        .setCustomContentView(collapsedView)
-                        .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                        .setFullScreenIntent(pendingIntent, true)
-                        .setWhen(sendTime)
-                        .setDefaults(Notification.DEFAULT_ALL)
-                ;
+//        NotificationCompat.Builder notificationBuilder =
+//                new NotificationCompat.Builder(this, "fcm-instance-specific")
+//                        .setSmallIcon(smallIconResId)
+////                        .setTicker(title)
+//                        .setContentTitle(title)
+//                        .setContentText(body)
+//                        .setLargeIcon(largeIcon)
+//                        .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+////                        .setBadgeIconType(R.drawable.ic_favorite_black_24dp)
+////                        .setVibrate()
+//                        .setAutoCancel(false)
+////                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+////                        .setLargeIcon(largeIconBitmap)
+//                        .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+////                        .setContentIntent(contentIntent)
+//                        //Heads-up notification.
+////                        .setCustomContentView(collapsedView)
+//                        .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+//                        .setFullScreenIntent(pendingIntent, true)
+//                        .setWhen(sendTime)
+//                        .setDefaults(Notification.DEFAULT_ALL)
+//                ;
 //        //Initialise RemoteInput
 //        String replyLabel = "Enter your reply here";
 //        RemoteInput remoteInput = new RemoteInput.Builder(KEY_REPLY)
@@ -389,50 +415,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
-
-
-
-    public void showBundleNotification() {
-
-        PendingIntent archiveIntent = PendingIntent.getActivity(this,
-                ARCHIVE_INTENT_ID,
-                getMessageReplyIntent(LABEL_ARCHIVE),
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Action replyAction =
-                new NotificationCompat.Action.Builder(android.R.drawable.sym_def_app_icon,
-                        LABEL_REPLY, archiveIntent)
-                        .build();
-        NotificationCompat.Action archiveAction =
-                new NotificationCompat.Action.Builder(android.R.drawable.sym_def_app_icon,
-                        LABEL_ARCHIVE, archiveIntent)
-                        .build();
-
-        NotificationCompat.Builder first = createNotificationBuider(
-                this, "First notification", "This is the first bundled notification");
-        first.setGroupSummary(true).setGroup(KEY_NOTIFICATION_GROUP);
-
-        NotificationCompat.Builder second = createNotificationBuider(
-                this, "Second notification", "Here's the second one");
-        second.setGroup(KEY_NOTIFICATION_GROUP);
-
-        NotificationCompat.Builder third = createNotificationBuider(
-                this, "Third notification", "And another for luck!");
-        third.setGroup(KEY_NOTIFICATION_GROUP);
-        third.addAction(replyAction);
-        third.addAction(archiveAction);
-
-//        NotificationCompat.Builder fourth = createNotificationBuider(
-//                this, "Fourth notification", "This one sin't a part of our group");
-//        second.setGroup(KEY_NOTIFICATION_GROUP);
-
-
-        showNotification(this, second.build(), 2);
-        showNotification(this, third.build(), 3);
-//        showNotification(this, fourth.build(), 3);
-        showNotification(this, first.build(), 7);
-
-    }
 
 
     public NotificationCompat.Builder createNotificationBuider(Context context,

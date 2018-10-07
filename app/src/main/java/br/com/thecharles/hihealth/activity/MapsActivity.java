@@ -1,9 +1,11 @@
 package br.com.thecharles.hihealth.activity;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
@@ -36,6 +38,7 @@ import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.helper.UserFirebase;
 import br.com.thecharles.hihealth.model.Message;
+import br.com.thecharles.hihealth.model.Notification;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -54,8 +57,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static final String KEY_TEXT_REPLY = "key_text_reply";
     int mRequestCode = 1000;
+    private static final String CHANNEL_ID = "channel_alert";
 
-//    DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
+
+    //    DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
 //    DatabaseReference messageRef = firebaseRef.child("debug").child("messages");
     private String idUserSender;
     private String idUserReceiver;
@@ -191,16 +196,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             if (id != null) {
 
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(this)
-                                .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
-                                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                                .setContentText("Mensagem Enviada!");
+                android.app.Notification mBuilder =new NotificationCompat.Builder(this, CHANNEL_ID)
+                        // set title, message, etc.
+                        .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
+                        .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                        .setContentText("Mensagem Enviada!")
+                        .build();
 
-                NotificationManager mNotificationManager =
+                NotificationManager manager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(mRequestCode, mBuilder.build());
-//
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    // Support for Android Oreo: Notification Channels
+                    NotificationChannel channel = new NotificationChannel(
+                            CHANNEL_ID,
+                            "Alertas",
+                            NotificationManager.IMPORTANCE_NONE);
+                    manager.createNotificationChannel(channel);
+                }
+
+
+
+                manager.notify(mRequestCode,mBuilder);
 //                Bundle remoteInput = RemoteInput.getResultsFromIntent(getIntent());
 ////        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
 //                CharSequence msg = remoteInput.getCharSequence(reply);

@@ -1,6 +1,7 @@
 package br.com.thecharles.hihealth;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -14,6 +15,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -80,7 +82,7 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 
     final int PROGRESS_MAX = 35;
     int PROGRESS_CURRENT = 0;
-
+    private static final String CHANNEL_ID = "channel_alert";
     int incr;
 
     @Override
@@ -357,6 +359,8 @@ public class ServiceShakeNotification extends Service implements SensorEventList
         PendingIntent pIntent = PendingIntent.getActivity(ServiceShakeNotification.this,
                 NOTIFICATION_ID, notificationIntent, flags);
 
+
+
         NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(smallIconResId)
                 .setContentTitle("Alerta Enviado")
@@ -467,12 +471,27 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 //        handler.removeCallbacks(thread);
 //        thread.interrupt();
 
+
+        NotificationManager manager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Support for Android Oreo: Notification Channels
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Alertas",
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.enableLights(true);
+            channel.enableVibration(true);
+            manager.createNotificationChannel(channel);
+        }
+
+
         //Deliver the notification
         Notification myNotification = notifyBuilder.build();
 
 
         mBuilder.setProgress(PROGRESS_MAX, incr, false);
-        mNotifyManager.notify(PROGRESS_ID, myNotification);
+        manager.notify(PROGRESS_ID, myNotification);
 
 
 
