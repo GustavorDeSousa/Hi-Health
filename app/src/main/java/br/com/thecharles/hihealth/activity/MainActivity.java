@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements
     private String idUserReceiver;
     private static final String KEY_TEXT_REPLY = "key_text_reply";
     int mRequestCode = 1000;
-    private static final String CHANNEL_ID = "channel_message";
+    private static final String MESSAGE_ID = "channel_message";
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
 
             if (id != null) {
 
-                Notification mBuilder =new NotificationCompat.Builder(this, CHANNEL_ID)
+                Notification mBuilder =new NotificationCompat.Builder(this, MESSAGE_ID)
                         // set title, message, etc.
                         .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
                         .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     // Support for Android Oreo: Notification Channels
                     NotificationChannel channel = new NotificationChannel(
-                            CHANNEL_ID,
+                            MESSAGE_ID,
                             "Mensagens",
                             NotificationManager.IMPORTANCE_MIN);
                     manager.createNotificationChannel(channel);

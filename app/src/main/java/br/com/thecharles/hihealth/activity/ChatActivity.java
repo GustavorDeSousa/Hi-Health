@@ -51,6 +51,9 @@ public class ChatActivity extends AppCompatActivity {
     private MessagesAdapter adapter;
     private List<Message> messages = new ArrayList<>();
 
+    String name;
+    String id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,7 @@ public class ChatActivity extends AppCompatActivity {
         if (bundle != null) {
 
             receiverUser = (User) bundle.getSerializable("chatContact");
+
 
             Log.d(TAG, "Chat: " + receiverUser.getName() +
                     " - " + receiverUser.getEmail() + "\n");

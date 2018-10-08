@@ -133,7 +133,7 @@ public class ServiceShakeNotification extends Service implements SensorEventList
         // calculate movement
         float totalMovement = Math.abs(x + y + z - lastX - lastY - lastZ);
 
-        if (mAccel > 20) {
+        if (mAccel > 40) {
 //            showNotification();
 
             if (totalMovement > MIN_FORCE) {
@@ -332,7 +332,9 @@ public class ServiceShakeNotification extends Service implements SensorEventList
 
 
         NotificationFCM alert = new NotificationFCM();
-        alert.getDataNotification();
+        alert.getTokens();
+//        alert.getDataNotification();
+//        alert.getSingleToken();
 
         // Create a Notification Builder instance.
         int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;

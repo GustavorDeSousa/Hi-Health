@@ -13,6 +13,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.helper.UserFirebase;
 import br.com.thecharles.hihealth.model.Message;
@@ -39,20 +42,67 @@ public class MyMessagesService extends Service {
     Notification notification = new Notification();
     private String userID;
 
+    String tokenDevice;
+    String nameUser;
+
+    User usuario = new User();
+    List<String> tokens = new ArrayList<>();
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
-    public void getMessagesFCM() {
-        userID = UserFirebase.getUId();
-        DatabaseReference messageRef = firebaseRefDebug.child("messages").child(userID);
-
-//        messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//    public void getMessagesFCM() {
+//        userID = UserFirebase.getUId();
+//        DatabaseReference messageRef = firebaseRefDebug.child("messages").child(userID);
+//
+////        messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+////            @Override
+////            public void onDataChange(DataSnapshot dataSnapshot) {
+////                Log.e(TAG, dataSnapshot.getValue().toString());
+////            }
+////
+////            @Override
+////            public void onCancelled(DatabaseError databaseError) {
+////
+////            }
+////        });
+//
+//
+//        valueEventListenerUser = messageRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Log.e(TAG, dataSnapshot.getValue().toString());
+//
+//                for (DataSnapshot node : dataSnapshot.getChildren()) {
+////                    node.child("gOVk1Rt0UWdpN43xSLExwRKiLZA3").
+//
+//                    String idSender = node.getKey();
+//
+////                    Iterable<DataSnapshot> idMsg = node.child(idSender).getChildren();
+////
+////                    DataSnapshot data = idMsg.iterator().next();
+////
+////                    data.getValue();
+////
+////                    String msg = node.child(idSender).getValue(String.class);
+//
+////                    node.child(idMsg)
+////                    Log.e(TAG, node.getKey());
+//                    Log.e(TAG, "Value >" + node.getValue().toString());
+//                    Log.e(TAG, "Key Sender >" + idSender);
+////                    Log.e(TAG, "Key msg >" + idMsg);
+////                    Log.e(TAG, "Teste > " + msg);
+//
+//
+//
+////                    Log.e(TAG, node.getChildren().toString());
+//                    Log.e(TAG, String.valueOf(node.getChildrenCount()));
+//
+//                }
+////                Message message = dataSnapshot.getValue(Message.class);
+//
 //            }
 //
 //            @Override
@@ -60,39 +110,69 @@ public class MyMessagesService extends Service {
 //
 //            }
 //        });
+//
+////        childEventListenerMessages = messagesRef.addChildEventListener(new ChildEventListener() {
+////            @Override
+////            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//////                Message message = dataSnapshot.getValue(Message.class);
+////                Log.e(TAG, dataSnapshot.getValue(String.class));
+////            }
+////
+////            @Override
+////            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+////
+////            }
+////
+////            @Override
+////            public void onChildRemoved(DataSnapshot dataSnapshot) {
+////
+////            }
+////
+////            @Override
+////            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+////
+////            }
+////
+////            @Override
+////            public void onCancelled(DatabaseError databaseError) {
+////
+////            }
+////        });
+//
+//    }
 
 
-        valueEventListenerUser = messageRef.addValueEventListener(new ValueEventListener() {
+    public void getTokens() {
+
+        firebaseRefDebug.child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot node : dataSnapshot.getChildren()) {
-//                    node.child("gOVk1Rt0UWdpN43xSLExwRKiLZA3").
 
-                    String idSender = node.getKey();
+                    String key = node.getKey();
+                    String data = node.getValue().toString();
 
-//                    Iterable<DataSnapshot> idMsg = node.child(idSender).getChildren();
-//
-//                    DataSnapshot data = idMsg.iterator().next();
-//
-//                    data.getValue();
-//
-//                    String msg = node.child(idSender).getValue(String.class);
+                    usuario.setName(node.child("registered").getValue(User.class).getName()); //set the name
+                    usuario.setToken(node.child("registered").getValue(User.class).getToken());
 
-//                    node.child(idMsg)
-//                    Log.e(TAG, node.getKey());
-                    Log.e(TAG, "Value >" + node.getValue().toString());
-                    Log.e(TAG, "Key Sender >" + idSender);
-//                    Log.e(TAG, "Key msg >" + idMsg);
-//                    Log.e(TAG, "Teste > " + msg);
+                     tokenDevice = usuario.getToken();
+                     nameUser = usuario.getName();
 
 
+//                    Log.e(TAG, "Value >" + data);
+                    Log.e(TAG, "Name -> " + nameUser);
+                    Log.e(TAG, "Key >- " + key);
+//                    Log.e(TAG, "Quantity  >" + node.getChildrenCount());
+//                    Log.e(TAG, "Quantity  >" + dataSnapshot.getChildrenCount());
+                    Log.e(TAG, "<<Token>> : " + tokenDevice);
 
-//                    Log.e(TAG, node.getChildren().toString());
-                    Log.e(TAG, String.valueOf(node.getChildrenCount()));
+
+                    tokens.add(tokenDevice);
+
 
                 }
-//                Message message = dataSnapshot.getValue(Message.class);
+
+                getSingleToken();
 
             }
 
@@ -101,37 +181,18 @@ public class MyMessagesService extends Service {
 
             }
         });
-
-//        childEventListenerMessages = messagesRef.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-////                Message message = dataSnapshot.getValue(Message.class);
-//                Log.e(TAG, dataSnapshot.getValue(String.class));
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
     }
 
+    public void getSingleToken() {
+//        tokens.toString();
 
+//        Log.i(TAG, "<<Tokens>> : " + tokens.toString());
+
+
+        for (String tk : tokens) {
+
+            Log.i(TAG, nameUser + ": >- " + tk);
+        }
+    }
 
 }

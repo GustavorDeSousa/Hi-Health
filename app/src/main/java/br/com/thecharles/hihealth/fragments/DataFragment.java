@@ -109,12 +109,14 @@ public class DataFragment extends Fragment{
 
                         /** TESTE REQUEST FMC */
                         NotificationFCM alert = new NotificationFCM();
-                        alert.getDataNotification();
+//                        alert.getDataNotification();
+//                        alert.getSingleToken();
+                        alert.getTokens();
 
 //                        NotificationFCM message = new NotificationFCM();
 //                        message.getMessageChat();
 //                        MyMessagesService serviceMsg = new MyMessagesService();
-//                        serviceMsg.getMessagesFCM();
+//                        serviceMsg.getTokens();
 
 
 ////                        getDataFirebase();

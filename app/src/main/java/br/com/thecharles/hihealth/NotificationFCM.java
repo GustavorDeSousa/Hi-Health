@@ -1,7 +1,5 @@
 package br.com.thecharles.hihealth;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -12,6 +10,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.helper.UserFirebase;
@@ -35,6 +35,9 @@ public class NotificationFCM {
     private String userID;
 
     String tokenReceiver;
+    String nameUser;
+
+//    public List<String> tokens = new ArrayList<>();
 
 
     /**
@@ -48,72 +51,43 @@ public class NotificationFCM {
 
 
 
-
-    public void getDataNotification() {
+    public void getTokens() {
         userID = UserFirebase.getUId();
-       userEventListenerUser = userRef.addValueEventListener(new ValueEventListener() {
+
+        firebaseRefDebug.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot node : dataSnapshot.getChildren()) {
+
+                    String key = node.getKey();
+                    String data = node.getValue().toString();
+
+                    usuario.setName(node.child("registered").getValue(User.class).getName()); //set the name
+                    usuario.setToken(node.child("registered").getValue(User.class).getToken());
 
 
 
-                usuario.setName(dataSnapshot.child("registered").getValue(User.class).getName()); //set the name
-                usuario.setToken(dataSnapshot.child("registered").getValue(User.class).getToken()); //set the name
-                Float lat = dataSnapshot.child("location").child("latLng").child("latitude").getValue(Float.class);
-                Float lng = dataSnapshot.child("location").child("latLng").child("longitude").getValue(Float.class);
 
-                LatLng latLng = new LatLng(lat, lng);
-                location.setLatLng(latLng);
-
-                userName = usuario.getName();
-                tokenDevice = usuario.getToken();
-                latLng = location.getLatLng();
-
-//                                Log.d(TAG, userName + " - " + tokenDevice);
-
-//                Notification notification = new Notification();
-//                                LatLng latLng = new LatLng(-23.500712, -46.575707);
-                notification.setTokenUser(tokenDevice);
-                notification.setNameUser(userName);
-                notification.setMessageAlert(" pode não estar passando bem. Que tal ajudar?!");
-                notification.setLatLngUser(latLng);
-                notification.setIdUser(userID);
-
-                String id = "";
-
-                getClientTokenDevice(id);
-
-                JsonObject jsonObj = new JsonObject();
-                jsonObj.addProperty("to", tokenReceiver);
-
-                JsonObject notificationData = new JsonObject();
-                notificationData.addProperty("id", notification.getIdUser());
-                notificationData.addProperty("name", notification.getNameUser());
-                notificationData.addProperty("message", notification.getMessageAlert());
-                notificationData.addProperty("latlng", notification.getLatLngUser().toString());
+                    tokenDevice = usuario.getToken();
+                    nameUser = usuario.getName();
 
 
-                jsonObj.add("data", notificationData);
+//                    Log.e(TAG, "Value >" + data);
+                    Log.e(TAG, "Name -> " + nameUser);
+                    Log.e(TAG, "Key >- " + key);
+//                    Log.e(TAG, "Quantity  >" + node.getChildrenCount());
+//                    Log.e(TAG, "Quantity  >" + dataSnapshot.getChildrenCount());
+                    Log.e(TAG, "<<Token>> : " + tokenDevice);
 
-                JsonObject msgObj = new JsonObject();
-                msgObj.add("message", jsonObj);
 
-                Log.d(TAG,"data  message " + jsonObj.toString());
 //
-                String json = jsonObj.toString();
-//                return notification;
+                    if (!key.equals(userID)) {
+                        getDataNotification(tokenDevice);
+                    }
 
 
 
-                try {
 
-//                    sendAlert(json);
-                    RequestFCM request = new RequestFCM();
-                    request.sendAlert(json);
-//                            sendData();
-//                            sendNotification();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
             }
@@ -125,7 +99,85 @@ public class NotificationFCM {
         });
     }
 
-    private void getClientTokenDevice(String idUserReceiver) {
+
+
+
+    public void getDataNotification(final String tk) {
+       userEventListenerUser = userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+
+                    usuario.setName(dataSnapshot.child("registered").getValue(User.class).getName()); //set the name
+                    usuario.setToken(dataSnapshot.child("registered").getValue(User.class).getToken()); //set the name
+                    Float lat = dataSnapshot.child("location").child("latLng").child("latitude").getValue(Float.class);
+                    Float lng = dataSnapshot.child("location").child("latLng").child("longitude").getValue(Float.class);
+
+                    LatLng latLng = new LatLng(lat, lng);
+                    location.setLatLng(latLng);
+
+                    userName = usuario.getName();
+                    tokenDevice = usuario.getToken();
+                    latLng = location.getLatLng();
+
+//                                Log.d(TAG, userName + " - " + tokenDevice);
+
+//                Notification notification = new Notification();
+//                                LatLng latLng = new LatLng(-23.500712, -46.575707);
+                    notification.setTokenUser(tokenDevice);
+                    notification.setNameUser(userName);
+                    notification.setMessageAlert(userName + " pode não estar passando bem. Que tal ajudar?!");
+                    notification.setLatLngUser(latLng);
+                    notification.setIdUser(userID);
+
+
+                    JsonObject jsonObj = new JsonObject();
+                    jsonObj.addProperty("to", tk);
+
+                    JsonObject notificationData = new JsonObject();
+                    notificationData.addProperty("id", notification.getIdUser());
+                    notificationData.addProperty("name", notification.getNameUser());
+                    notificationData.addProperty("message", notification.getMessageAlert());
+                    notificationData.addProperty("latlng", notification.getLatLngUser().toString());
+
+
+                    jsonObj.add("data", notificationData);
+
+                    JsonObject msgObj = new JsonObject();
+                    msgObj.add("message", jsonObj);
+
+                    Log.d(TAG, "data  message " + jsonObj.toString());
+//
+                    String json = jsonObj.toString();
+//                return notification;
+
+
+                    try {
+
+//                    sendAlert(json);
+                        RequestFCM request = new RequestFCM();
+                        request.sendAlert(json);
+//                            sendData();
+//                            sendNotification();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+//       getTokens();
+
+    }
+
+    private void getTokenMessage(String idUserReceiver) {
 
             firebaseRefDebug.child(idUserReceiver).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -163,7 +215,7 @@ public class NotificationFCM {
     public void getMessageChat(final String msg, final String idUserReceiver) {
         userID = UserFirebase.getUId();
 
-        getClientTokenDevice(idUserReceiver);
+        getTokenMessage(idUserReceiver);
 
 //        final DatabaseReference messageRef = dbRefDebug.child("messages");
 
@@ -189,9 +241,9 @@ public class NotificationFCM {
                 jsonObj.addProperty("to", tokenReceiver);
 
                 JsonObject messageData = new JsonObject();
-                messageData.addProperty("id", message.getIdSender());
-                messageData.addProperty("name", message.getNameSender());
-                messageData.addProperty("message", message.getMessage());
+                messageData.addProperty("senderId", message.getIdSender());
+                messageData.addProperty("senderName", message.getNameSender());
+                messageData.addProperty("senderMessage", message.getMessage());
 //                notificationData.addProperty("latlng", notification.getLatLngUser().toString());
 
 

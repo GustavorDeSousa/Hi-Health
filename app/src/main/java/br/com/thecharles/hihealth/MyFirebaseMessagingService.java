@@ -45,25 +45,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     //    String KEY_REPLY = "key_reply";
     private static final String KEY_REPLY = "key_text_reply";
-    public static final int NOTIFICATION_ID = 1;
+//    public static final int NOTIFICATION_ID = 1;
 
 
 
     private static final String KEY_TEXT_REPLY = "key_text_reply";
     int mRequestCode = 1000;
 
-    private static final String CHANNEL_ID = "channel_alert";
+    private static final String ALERT_ID = "channel_alert";
+    private static final String MESSAGE_ID = "channel_message";
 
 
-    public static final int REPLY_INTENT_ID = 0;
-    public static final int ARCHIVE_INTENT_ID = 1;
-    public static final int REMOTE_INPUT_ID = 1247;
-    public static final String LABEL_REPLY = "Reply";
-    public static final String LABEL_ARCHIVE = "Archive";
-    public static final String REPLY_ACTION = "br.com.thecharles.hihealth.ACTION_MESSAGE_REPLY";
-    public static final String KEY_PRESSED_ACTION = "KEY_PRESSED_ACTION";
-    //    public static final String KEY_TEXT_REPLY = "KEY_TEXT_REPLY";
-    private static final String KEY_NOTIFICATION_GROUP = "KEY_NOTIFICATION_GROUP";
+//    public static final int REPLY_INTENT_ID = 0;
+//    public static final int ARCHIVE_INTENT_ID = 1;
+//    public static final int REMOTE_INPUT_ID = 1247;
+//    public static final String LABEL_REPLY = "Reply";
+//    public static final String LABEL_ARCHIVE = "Archive";
+//    public static final String REPLY_ACTION = "br.com.thecharles.hihealth.ACTION_MESSAGE_REPLY";
+//    public static final String KEY_PRESSED_ACTION = "KEY_PRESSED_ACTION";
+//    //    public static final String KEY_TEXT_REPLY = "KEY_TEXT_REPLY";
+//    private static final String KEY_NOTIFICATION_GROUP = "KEY_NOTIFICATION_GROUP";
 
 
 //    public static CharSequence getReplyMessage(Intent intent) {
@@ -88,6 +89,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         }
         if (remoteMessage.getNotification() != null) {
+
             sendNotification(remoteMessage.getNotification(), null);
             getMessages(remoteMessage.getNotification(), null);
 //            showBundleNotification();
@@ -101,8 +103,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String body;
 
         if(message == null){
-            title = data.get("name") + " enviou uma mensagem";
-            body = data.get("message")
+            title = data.get("senderName") + " enviou uma mensagem";
+            body = data.get("senderMessage")
 //                    + " = " + data.get("userName")
             ;
         }else{
@@ -110,86 +112,85 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             body  = message.getBody();
         }
 
+        if (body != null) {
 
-        Intent intent = new Intent(MyFirebaseMessagingService.this,MainActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("idUser", data.get("id"));
-        bundle.putString("nameUser", data.get("name"));
-        intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        TaskStackBuilder taskStack = TaskStackBuilder.create(this);
-        taskStack.addParentStack(ChatActivity.class);
-        taskStack.addNextIntent(intent);
-
-
-        String reply = "RESPONDER";
-        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
-                .setLabel("Mensagem")
-                .build();
-
-        PendingIntent pendingIntent = taskStack.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent intent = new Intent(MyFirebaseMessagingService.this, MainActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("idUser", data.get("senderId"));
+            bundle.putString("nameUser", data.get("senderName"));
+            intent.putExtras(bundle);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            TaskStackBuilder taskStack = TaskStackBuilder.create(this);
+            taskStack.addParentStack(MainActivity.class);
+            taskStack.addNextIntent(intent);
 
 
-        int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
+            String reply = "RESPONDER";
+            RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+                    .setLabel("Mensagem")
+                    .build();
+
+            PendingIntent pendingIntent = taskStack.getPendingIntent(0, PendingIntent.FLAG_ONE_SHOT);
 
 
-        NotificationCompat.Action action = new NotificationCompat.Action.Builder(
-                R.mipmap.ic_launcher_round, reply, pendingIntent)
-                .addRemoteInput(remoteInput).build();
+            int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
 
 
-        Notification builder =new NotificationCompat.Builder(this, CHANNEL_ID)
-                // set title, message, etc.
-                .setAutoCancel(true)
-                .setSmallIcon(smallIconResId)
-                .addAction(action)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            NotificationCompat.Action action = new NotificationCompat.Action.Builder(
+                    R.mipmap.ic_launcher_round, reply, pendingIntent)
+                    .addRemoteInput(remoteInput).build();
+
+
+            Notification builder = new NotificationCompat.Builder(this, MESSAGE_ID)
+                    // set title, message, etc.
+                    .setAutoCancel(true)
+                    .setSmallIcon(smallIconResId)
+                    .addAction(action)
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
 //                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
 //                        .setContentIntent(contentIntent)
-                //Heads-up notification.
+                    //Heads-up notification.
 //                        .setCustomContentView(collapsedView)
 //                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setFullScreenIntent(pendingIntent, true)
+                    .setFullScreenIntent(pendingIntent, true)
 //                .setWhen(sendTime)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setContentIntent(pendingIntent)
-                .build();
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setContentIntent(pendingIntent)
+                    .build();
 
-        //         Create Notification instance.
-        Notification alert = builder;
-        alert.flags =
-                //Noticaçao permanente
+            //         Create Notification instance.
+            Notification alert = builder;
+            alert.flags =
+                    //Noticaçao permanente
 //                Notification.FLAG_ONGOING_EVENT |
-                Notification.FLAG_SHOW_LIGHTS
-        //Vibrar até olhar a mensagem
+                    Notification.FLAG_SHOW_LIGHTS
+            //Vibrar até olhar a mensagem
 //                        | Notification.FLAG_INSISTENT
-        ;
+            ;
 
 
+            NotificationManager manager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // Support for Android Oreo: Notification Channels
+                NotificationChannel channel = new NotificationChannel(
+                        MESSAGE_ID,
+                        "Mensagens",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                channel.enableLights(true);
+                channel.enableVibration(true);
+                manager.createNotificationChannel(channel);
+            }
 
-        NotificationManager manager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Support for Android Oreo: Notification Channels
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Mensagens",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channel.enableLights(true);
-            channel.enableVibration(true);
-            manager.createNotificationChannel(channel);
-        }
+
 
 //        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(mRequestCode,builder);
+            manager.notify(mRequestCode, builder);
 
 
-
-
-
-
+        }
 
     }
 
@@ -219,18 +220,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                   Map<String, String> data) {
 
 
-        String title;
-        String body;
 
-        if(notification == null){
-            title = "Hi-Health";
-            body = data.get("name")+ data.get("message")
+            String title;
+            String body;
+
+            if (notification == null) {
+                title = "Hi-Health";
+                body = data.get("message")
 //                    + " = " + data.get("userName")
-            ;
-        }else{
-            title = notification.getTitle();
-            body  = notification.getBody();
-        }
+                ;
+            } else {
+                title = notification.getTitle();
+                body = notification.getBody();
+            }
+
 
 
 //        Intent it = new Intent(this, CustomNotificationActivity.class);
@@ -238,41 +241,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 ////System.currentTimeMillis() is used for unique Id
 //        PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), it,0);
 
+        if (body != null) {
 
-
-
-
-
-
-
-        Intent intent = new Intent(MyFirebaseMessagingService.this,MapsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("idUser", data.get("id"));
-        bundle.putString("nameUser", data.get("name"));
-        bundle.putString("latlngUser", data.get("latlng"));
-        intent.putExtras(bundle);
+            Intent intent = new Intent(MyFirebaseMessagingService.this, MapsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("idUser", data.get("id"));
+            bundle.putString("nameUser", data.get("name"));
+            bundle.putString("latlngUser", data.get("latlng"));
+            intent.putExtras(bundle);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        TaskStackBuilder taskStack = TaskStackBuilder.create(this);
-        taskStack.addParentStack(MapsActivity.class);
-        taskStack.addNextIntent(intent);
+            TaskStackBuilder taskStack = TaskStackBuilder.create(this);
+            taskStack.addParentStack(MapsActivity.class);
+            taskStack.addNextIntent(intent);
 
 
-        String reply = "RESPONDER";
-        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
-                .setLabel("Mensagem")
-                .build();
+            String reply = "RESPONDER";
+            RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+                    .setLabel("Mensagem")
+                    .build();
 
-        PendingIntent pendingIntent = taskStack.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = taskStack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
+            int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
 
 //        NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_prev, "Previous", prevPendingIntent).build();
 
 
-        NotificationCompat.Action action = new NotificationCompat.Action.Builder(
-                R.mipmap.ic_launcher_round, reply, pendingIntent)
-                .addRemoteInput(remoteInput).build();
+            NotificationCompat.Action action = new NotificationCompat.Action.Builder(
+                    R.mipmap.ic_launcher_round, reply, pendingIntent)
+                    .addRemoteInput(remoteInput).build();
 
 //        Notification.Action action = new NotificationCompat.Action.Builder(R.mipmap.ic_launcher_round,
 //                reply,pendingIntent)
@@ -280,51 +278,52 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                .build();
 
 
-
-        Notification builder =new NotificationCompat.Builder(this, CHANNEL_ID)
-                // set title, message, etc.
-                .setAutoCancel(true)
-                .setSmallIcon(smallIconResId)
-                .addAction(action)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            Notification builder = new NotificationCompat.Builder(this, ALERT_ID)
+                    // set title, message, etc.
+                    .setAutoCancel(true)
+                    .setSmallIcon(smallIconResId)
+                    .addAction(action)
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
 //                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
 //                        .setContentIntent(contentIntent)
-                //Heads-up notification.
+                    //Heads-up notification.
 //                        .setCustomContentView(collapsedView)
 //                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setFullScreenIntent(pendingIntent, true)
+                    .setFullScreenIntent(pendingIntent, true)
 //                .setWhen(sendTime)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setContentIntent(pendingIntent)
-                .build();
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setContentIntent(pendingIntent)
+                    .build();
 
-        //         Create Notification instance.
-        Notification alert = builder;
-        alert.flags =
-                //Noticaçao permanente
+            //         Create Notification instance.
+            Notification alert = builder;
+            alert.flags =
+                    //Noticaçao permanente
 //                Notification.FLAG_ONGOING_EVENT |
-                Notification.FLAG_SHOW_LIGHTS
-                        //Vibrar até olhar a mensagem
-                        | Notification.FLAG_INSISTENT
-        ;
+                    Notification.FLAG_SHOW_LIGHTS
+                            //Vibrar até olhar a mensagem
+                            | Notification.FLAG_INSISTENT
+            ;
 
-        NotificationManager manager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Support for Android Oreo: Notification Channels
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Alertas",
-                    NotificationManager.IMPORTANCE_HIGH);
-            channel.enableLights(true);
-            channel.enableVibration(true);
-            manager.createNotificationChannel(channel);
-        }
+            NotificationManager manager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // Support for Android Oreo: Notification Channels
+                NotificationChannel channel = new NotificationChannel(
+                        ALERT_ID,
+                        "Alertas",
+                        NotificationManager.IMPORTANCE_HIGH);
+                channel.enableLights(true);
+                channel.enableVibration(true);
+                manager.createNotificationChannel(channel);
+            }
+
+
 
 //        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(mRequestCode,builder);
+            manager.notify(mRequestCode, builder);
 
 
 //        Intent it = new Intent(this,  MapsActivity.class);
@@ -339,21 +338,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        NotificationManager notificationManager =
 //                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Create a Notification Builder instance.
+            // Create a Notification Builder instance.
 //        int smallIconResId = R.mipmap.ic_launcher_foreground_notifaction;
-        int largeIconResId = R.drawable.ic_account_circle_black_24dp;
-        long sendTime = System.currentTimeMillis();
+            int largeIconResId = R.drawable.ic_account_circle_black_24dp;
+            long sendTime = System.currentTimeMillis();
 
 //        BitmapDrawable bitmapDrawable = (BitmapDrawable)getDrawable(largeIconResId);
 //        Bitmap largeIconBitmap = bitmapDrawable.getBitmap();
 
-        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.view_collapsed_notification);
-        collapsedView.setTextViewText(R.id.timestamp, DateUtils.formatDateTime(this, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME));
-        collapsedView.setTextViewText(R.id.content_text, data.get("name") + data.get("message"));
+            RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.view_collapsed_notification);
+            collapsedView.setTextViewText(R.id.timestamp, DateUtils.formatDateTime(this, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME));
+            collapsedView.setTextViewText(R.id.content_text, data.get("name") + data.get("message"));
 
 
-        Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.ic_account_circle_black_24dp);
+            Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(),
+                    R.drawable.ic_account_circle_black_24dp);
 
 //        NotificationCompat.Builder notificationBuilder =
 //                new NotificationCompat.Builder(this, "fcm-instance-specific")
@@ -416,10 +415,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        break;
 
 
-
-
-
-
 //        PendingIntent muteIntent = notificationBuilder.addAction(new NotificationCompat.Action(
 //                R.drawable.ic_account_circle_black_24dp, "Mute", mu));
 
@@ -456,10 +451,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                .build();
 
 
-
-
-
-        //Notification.Action instance added to Notification Builder.
+            //Notification.Action instance added to Notification Builder.
 //        notificationBuilder.addAction(replyAction);
 
 //        Intent intent = new Intent(this, MapsActivity.class);
@@ -471,7 +463,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //
 //        notificationBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "DISMISS", dismissIntent);
 
-        //Create Notification.
+            //Create Notification.
 //        NotificationManager notificationManager =
 //                (NotificationManager)
 //                        getSystemService(Context.NOTIFICATION_SERVICE);
@@ -500,7 +492,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        notificationBuilder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "DISMISS", dismissIntent);
 
 
-
 ////         Create Notification instance.
 //        Notification alert = notificationBuilder.build();
 //        alert.flags =
@@ -516,8 +507,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        notificationManager.notify(2, alert);
 
 
-    }
-
+        }
 
 
 //    public NotificationCompat.Builder createNotificationBuider(Context context,
@@ -532,7 +522,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
 //                .setAutoCancel(true);
 //    }
-
 
 
 //    public NotificationCompat.Builder createNotificationBuider(RemoteMessage.Notification notification,
@@ -619,5 +608,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                .putExtra(CONVERSATION_LABEL, label);
 //    }
 
+    }
 
 }

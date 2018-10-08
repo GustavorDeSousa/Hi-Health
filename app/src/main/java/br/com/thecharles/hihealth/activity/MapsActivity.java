@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import br.com.thecharles.hihealth.MyFirebaseMessagingService;
+import br.com.thecharles.hihealth.NotificationFCM;
 import br.com.thecharles.hihealth.R;
 import br.com.thecharles.hihealth.config.SettingsFirebase;
 import br.com.thecharles.hihealth.helper.UserFirebase;
@@ -57,7 +58,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static final String KEY_TEXT_REPLY = "key_text_reply";
     int mRequestCode = 1000;
-    private static final String CHANNEL_ID = "channel_alert";
+
+    private static final String ALERT_ID = "channel_alert";
 
 
     //    DatabaseReference database = SettingsFirebase.getFirebaseDatabase();
@@ -196,7 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             if (id != null) {
 
-                android.app.Notification mBuilder =new NotificationCompat.Builder(this, CHANNEL_ID)
+                android.app.Notification mBuilder =new NotificationCompat.Builder(this, ALERT_ID)
                         // set title, message, etc.
                         .setSmallIcon(R.mipmap.ic_launcher_foreground_notifaction)
                         .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
@@ -208,7 +210,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     // Support for Android Oreo: Notification Channels
                     NotificationChannel channel = new NotificationChannel(
-                            CHANNEL_ID,
+                            ALERT_ID,
                             "Alertas",
                             NotificationManager.IMPORTANCE_NONE);
                     manager.createNotificationChannel(channel);
@@ -257,6 +259,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                                getSystemService(Context.NOTIFICATION_SERVICE);
 //                notificationManager.notify(2,
 //                        notificationBuilder.build());
+
+                NotificationFCM messageNotification = new NotificationFCM();
+                messageNotification.getMessageChat(strMsg, idUserReceiver);
 
             } else {//
 
