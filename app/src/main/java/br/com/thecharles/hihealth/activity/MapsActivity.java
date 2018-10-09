@@ -218,7 +218,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-                manager.notify(mRequestCode,mBuilder);
+
 //                Bundle remoteInput = RemoteInput.getResultsFromIntent(getIntent());
 ////        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
 //                CharSequence msg = remoteInput.getCharSequence(reply);
@@ -262,6 +262,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 NotificationFCM messageNotification = new NotificationFCM();
                 messageNotification.getMessageChat(strMsg, idUserReceiver);
+
+                manager.notify(mRequestCode,mBuilder);
 
             } else {//
 

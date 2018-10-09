@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-                manager.notify(mRequestCode,mBuilder);
+
 //                Bundle remoteInput = RemoteInput.getResultsFromIntent(getIntent());
 ////        Intent it = new Intent(this,  MyFirebaseMessagingService.class);
 //                CharSequence msg = remoteInput.getCharSequence(reply);
@@ -209,6 +209,8 @@ public class MainActivity extends AppCompatActivity implements
 
                 NotificationFCM messageNotification = new NotificationFCM();
                 messageNotification.getMessageChat(strMsg, idUserReceiver);
+
+                manager.notify(mRequestCode,mBuilder);
             }
         }
 
