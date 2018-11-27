@@ -6,8 +6,8 @@ android {
         applicationId "br.com.thecharles.hihealth"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -23,6 +23,7 @@ dependencies {
 
     // Testing dependencies
     implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -31,25 +32,35 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    // Google
-    implementation 'com.google.android.gms:play-services-auth:15.0.1'
 
-    // Firebase Authentication
-    implementation 'com.google.firebase:firebase-core:16.0.1'
-    implementation 'com.google.firebase:firebase-auth:16.0.2'
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.google.firebase:firebase-auth:15.0.0'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
+
+    // Fitness
+    implementation 'com.google.android.gms:play-services-fitness:15.0.0'
 
     // Google Sign In SDK (only required for Google Sign In)
-    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
 
     // Firebase UI
     // Used in FirebaseUIActivity.
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
 
-    // Facebook Android SDK (only required for Facebook Login)
+    // Facebook Android SDK (only required for Facebook LoginActivity)
     // Used in FacebookLoginActivity.
+//    implementation 'com.facebook.android:facebook-LoginActivity:4.33.0'
     implementation 'com.facebook.android:facebook-login:4.33.0'
     implementation 'com.android.support:customtabs:27.1.1'
 
+    /*Dependência para arredondamento de imagens*/
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+//    implementation 'com.google.api-client:google-api-client:1.23.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.google.code.gson:gson:2.8.2'
 
 }
 

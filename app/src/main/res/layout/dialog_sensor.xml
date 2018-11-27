@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog"
+    android:layout_margin="16dp">
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:text="Enviar Alerta"
+        android:textSize="25dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Caso esteja passando mal escolha a situação em que você se encontra, caso contratio ao acabar o tempo será emitido um alerta aos seus contatos"
+        android:textSize="18dp"
+        android:padding="20dp"
+        android:textStyle="normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="right">
+
+
+        <TextView
+        android:id="@+id/countdown_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog"
+        android:text="00:30"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/btnBem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_dialog"
+            android:backgroundTint="@color/colorAccent"
+            android:text="Estou bem"
+            android:textAllCaps="true"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="10dp"/>
+
+
+    </LinearLayout>
+
+<!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:padding="8dp">-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/countdown_text"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/bg_dialog"-->
+            <!--android:text="00:30"-->
+            <!--android:textSize="30sp"-->
+            <!--android:textStyle="bold" />-->
+
+        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/btnMal"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:background="@android:color/white"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:text="Estou Bem"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:textColor="@color/colorAccent" />&ndash;&gt;-->
+
+        <!--<Button-->
+            <!--android:id="@+id/btnBem"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/bg_dialog"-->
+            <!--android:backgroundTint="@color/colorAccent"-->
+            <!--android:text="Estou Bem"-->
+            <!--android:padding="5dp"-->
+            <!--android:textColor="@android:color/white" />-->
+    <!--</LinearLayout>-->
+
+
+</LinearLayout>

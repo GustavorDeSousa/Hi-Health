@@ -1,20 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/imgBackground"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@color/com_facebook_button_background_color_pressed" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgPerfil"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/com_facebook_profile_picture_blank_square" />
+
+    <TextView
+        android:id="@+id/nmUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/imgBackground"
+        android:layout_toRightOf="@+id/imgPerfil"/>
+
+    <TextView
+        android:id="@+id/txEndereco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="15dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/nmUsuario"
+        android:layout_toRightOf="@+id/imgPerfil"/>
+
+    <Button
+        android:id="@+id/btnEditPerfil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_rose"
+        android:textColor="#fff"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/editar_perfil"
+        android:layout_below="@+id/imgPerfil"/>
+
+    <TextView
+        android:id="@+id/txTotalAmigos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_marginLeft="130dp"
+        android:layout_below="@+id/txEndereco"
+        android:layout_toRightOf="@+id/btnEditPerfil"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/amigos"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/txEndereco"
+        android:layout_toRightOf="@+id/txTotalAmigos"/>
+
+    <TextView
+        android:id="@+id/txTitleSangue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/tipo_sanguineo"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/btnEditPerfil"/>
+
+    <TextView
+        android:id="@+id/txSangue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/txTitleSangue"/>
+
+    <TextView
+        android:id="@+id/txTitleAltura"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text= "@string/altura"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/txSangue"/>
+
+    <TextView
+        android:id="@+id/txAltura"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/txTitleAltura"/>
 
 
     <TextView
+        android:id="@+id/txTitlePeso"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/title_profile"
-        android:gravity="center_horizontal"/>
+        android:layout_height="wrap_content"
+        android:text="@string/peso"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/txAltura"/>
+
+    <TextView
+        android:id="@+id/txPeso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/txTitlePeso"/>
+
+    <TextView
+        android:id="@+id/txTitleHistorico"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/historico_doenca"
+        android:textStyle="bold"
+        android:textSize="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/txPeso"/>
+    <TextView
+        android:id="@+id/txHistorico"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/txTitleHistorico"/>
 
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:src="@drawable/ic_warning_black_24dp"
-        android:layout_weight="3"/>
-</LinearLayout>
+    <!--<TextView-->
+        <!--android:id="@+id/tvProfile"-->
+        <!--android:layout_below="@id/txHistorico"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="#fff"/>-->
+</RelativeLayout>
+

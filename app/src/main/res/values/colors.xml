@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4DD0E1</color>
-    <color name="colorPrimaryDark">#009FAF</color>
+    <color name="colorPrimary">#4dd0e1</color>
+    <color name="colorPrimaryDark">#009faf</color>
     <color name="colorAccent">#FF4081</color>
 
 
@@ -17,4 +17,8 @@
     <color name="frag_velocity">#883997</color>
     <color name="frag_height">#EE98FB</color>
     <color name="frag_location">#C7437C</color>
+
+    <color name="balaoSender">#504dd0e1</color>
+    <color name="balaoReceiver">#50ff4081</color>
+
 </resources>
